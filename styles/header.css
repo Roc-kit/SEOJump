@@ -1,0 +1,84 @@
+/* Header Section Styles */
+.header-section {
+    margin-bottom: 30px;
+}
+
+.header-main {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 0;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.header-logo {
+    width: 32px;
+    height: 32px;
+}
+
+.header-title {
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--text-color);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.header-title:hover {
+    color: var(--primary-color);
+}
+
+.header-right {
+    display: flex;
+    gap: 16px;
+}
+
+.social-link {
+    display: flex;
+    align-items: center;
+    color: var(--text-color-secondary);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.social-icon {
+    width: 24px;
+    height: 24px;
+}
+
+.social-link:hover {
+    color: var(--primary-color);
+}
+
+.header-divider {
+    height: 1px;
+    background-color: var(--border-color);
+    margin: 15px 0;
+}
+
+.header-support {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    color: var(--text-color-secondary);
+    font-size: 14px;
+    text-align: center;
+    flex-wrap: wrap;
+}
+
+.coffee-link {
+    color: rgb(114, 89,254);
+    text-decoration: none;
+    font-weight: 500;
+    transition: opacity 0.2s;
+}
+
+.coffee-link:hover {
+    opacity: 0.8;
+}

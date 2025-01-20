@@ -1,0 +1,387 @@
+[
+  {
+    "name": "Test",
+    "engines": [
+      {
+        "name": "Similarweb bruteAction",
+        "url": "https://www.similarweb.com/generator/?__ess_start&__bruteAction=.checker-hero__search input[placeholder='Enter a keyword']&__text=%selectedText%"
+      },
+      {
+        "name": "Similarweb input+submit",
+        "url": "https://www.similarweb.com/generator/?__ess_start&__input=.checker-hero__search input[placeholder='Enter a keyword']&__submit=.checker-hero__search button[data-test='submit']&__text=%selectedText%"
+      },
+      {
+        "name": "vercel.ai bruteAction",
+        "url": "https://chat.vercel.ai/?__ess_start&__bruteAction=textarea[placeholder='Send a message...']&__text=%selectedText%"
+      },
+      {
+        "name": "vercel.ai input+submit",
+        "url": "https://chat.vercel.ai/?__ess_start&__input=textarea[placeholder='Send a message...']&__submit=button[class*='bg-primary']&__text=%selectedText%"
+      },
+      {
+        "name": "Google Incognito",
+        "url": "https://www.google.com/search?q=%selectedText%&ie=utf-8&oe=utf-8&__ess_start&__incognito=true"
+      },
+      {
+        "name": "Poe input+submit",
+        "url": "https://poe.com?__ess_start&__input=textarea[placeholder='Start a new chat']&__submit=button[data-button-send='true']&__text=%selectedText%"
+      },
+      {
+        "name": "Poe bruteAction",
+        "url": "https://poe.com?__ess_start&__bruteAction=textarea[placeholder='Start a new chat']&__text=%selectedText%"
+      }
+    ]
+  },
+  {
+    "name": "Test2-disable",
+    "disable": true,
+    "engines": [
+      {
+        "name": "Pinterest Trends",
+        "url": "https://trends.pinterest.com/detail/?terms=%selectedText%"
+      },
+      {
+        "name": "TikTok keyword insights",
+        "url": "https://ads.tiktok.com/business/creativecenter/keyword-insights/pc/en?__ess_start&__bruteAction=input[placeholder='Search by keyword']&__text=%selectedText%"
+      },
+      {
+        "name": "Bing Incognito",
+        "url": "https://www.bing.com/search?q=%selectedText%&__ess_start&__incognito=true"
+      },
+      {
+        "name": "Chrome Web Store",
+        "url": "https://chromewebstore.google.com/search/%selectedText%"
+      }
+    ]
+  },
+  {
+    "name": "Web",
+    "engines": [
+      {
+        "name": "Baidu",
+        "url": "https://www.baidu.com/s?wd=%selectedText%&ie=utf-8"
+      },
+      {
+        "name": "Google",
+        "url": "https://www.google.com/search?q=%selectedText%&ie=utf-8&oe=utf-8"
+      },
+      {
+        "name": "ChatGPT",
+        "url": "https://chatgpt.com/?q=%selectedText%"
+      },
+      {
+        "name": "Bing",
+        "url": "https://www.bing.com/search?q=%selectedText%"
+      },
+      {
+        "name": "Yahoo",
+        "url": "https://search.yahoo.com/search?p=%selectedText%"
+      },
+      {
+        "name": "Startpage",
+        "url": "https://www.startpage.com/do/dsearch?q=%selectedText%"
+      },
+      {
+        "name": "Yandex",
+        "url": "https://yandex.com/search/?text=%selectedText%"
+      },
+      {
+        "name": "DDG",
+        "url": "https://duckduckgo.com/?q=%selectedText%"
+      },
+      {
+        "name": "Ecosia",
+        "url": "https://www.ecosia.org/search?method=index&q=%selectedText%"
+      },
+      {
+        "name": "Brave",
+        "url": "https://search.brave.com/search?q=%selectedText%"
+      },
+      {
+        "name": "Wolfram|Alpha",
+        "url": "https://www.wolframalpha.com/input?i=%selectedText%"
+      },
+      {
+        "name": "Kagi",
+        "url": "https://kagi.com/search?q=%selectedText%"
+      },
+      {
+        "name": "Infospace",
+        "url": "https://infospace.com/serp?q=%selectedText%"
+      },
+      {
+        "name": "WebCrawler",
+        "url": "https://www.webcrawler.com/serp?q=%selectedText%"
+      },
+      {
+        "name": "Dogpile",
+        "url": "https://www.dogpile.com/serp?q=%selectedText%"
+      },
+      {
+        "name": "NAVER",
+        "url": "https://search.naver.com/search.naver?query=%selectedText%"
+      },
+      {
+        "name": "Perplexity",
+        "url": "https://www.perplexity.ai/search?q=%selectedText%"
+      },
+      {
+        "name": "goo",
+        "url": "https://search.goo.ne.jp/web.jsp?MT=%selectedText%"
+      },
+      {
+        "name": "Rakuten",
+        "url": "https://websearch.rakuten.co.jp/Web?qt=%selectedText%"
+      }
+    ]
+  },
+  {
+    "name": "Translate",
+    "engines": [
+      {
+        "name": "Google Translate",
+        "url": "https://translate.google.com/?q=%selectedText%"
+      },
+      {
+        "name": "Baidu Translate",
+        "url": "https://fanyi.baidu.com/#auto/zh/%selectedText%"
+      },
+      {
+        "name": "DeepL",
+        "url": "https://www.deepl.com/translator#zh/en/%selectedText%"
+      },
+      {
+        "name": "Forvo",
+        "url": "https://forvo.com/search/%selectedText%"
+      }
+    ]
+  },
+  {
+    "name": "Keyword Analysis",
+    "engines": [
+      {
+        "name": "Keyword Generator",
+        "url": "https://ahrefs.com/keyword-generator/?country=us&input=%selectedText%"
+      },
+      {
+        "name": "Keyword Difficulty",
+        "url": "https://ahrefs.com/keyword-difficulty/?country=us&input=%selectedText%"
+      },
+      {
+        "name": "Google Trends",
+        "url": "https://trends.google.com/trends/explore?date=today%205-y&geo=US&q=%selectedText%&hl=en-US"
+      },
+      {
+        "name": "Google Trends Exact Match",
+        "url": "https://trends.google.com/trends/explore?date=today%205-y&geo=US&q=%22%selectedText%%22&hl=en-US"
+      },
+      {
+        "name": "Keyword Rank",
+        "url": "https://ahrefs.com/keyword-rank-checker/?country=us&domain=%currentUrl%&input=%selectedText%"
+      },
+      {
+        "name": "SERP Checker",
+        "url": "https://ahrefs.com/serp-checker/?country=us&input=%selectedText%"
+      },
+      {
+        "name": "Ubersuggest",
+        "url": "https://app.neilpatel.com/en/ubersuggest/overview?keyword=%selectedText%&lang=en&locId=2840"
+      },
+      {
+        "name": "People Also Ask",
+        "url": "https://alsoasked.com/search?term=%selectedText%&language=en&region=us&depth=2"
+      },
+      {
+        "name": "Semrush Keyword Magic Tool",
+        "url": "https://www.semrush.com/analytics/keywordmagic/?q=%selectedText%&db=us"
+      },
+      {
+        "name": "Semrush Keyword Overview",
+        "url": "https://www.semrush.com/analytics/keywordoverview/?q=%selectedText%&db=us"
+      },
+      {
+        "name": "Wordstream",
+        "url": "https://tools.wordstream.com/fkt?website=%selectedText%"
+      },
+      {
+        "name": "Traffic - Keyword",
+        "url": "https://ahrefs.com/traffic-checker/?input=%selectedText%&mode=subdomains"
+      },
+      {
+        "name": "Backlink - Keyword",
+        "url": "https://ahrefs.com/backlink-checker/?input=%selectedText%&mode=subdomains"
+      },
+      {
+        "name": "Website Authority - Keyword",
+        "url": "https://ahrefs.com/website-authority-checker/?input=%selectedText%"
+      },
+      {
+        "name": "Google Keyword Planner",
+        "url": "https://ads.google.com/aw/keywordplanner/ideas/new?__ess_start&__delay=9000&__input=input[placeholder='Try &quot;meal delivery&quot; or &quot;leather boots&quot;']&__submit=.expanded-content .submit-button&__text=%selectedText%"
+      }
+    ]
+  },
+  {
+    "name": "Website Analysis",
+    "engines": [
+      {
+        "name": "Traffic - Website",
+        "url": "https://ahrefs.com/traffic-checker/?input=%currentDomain%&mode=subdomains"
+      },
+      {
+        "name": "Traffic - URL",
+        "url": "https://ahrefs.com/traffic-checker/?input=%currentUrl%&mode=exact"
+      },
+      {
+        "name": "Backlink - Website",
+        "url": "https://ahrefs.com/backlink-checker/?input=%currentDomain%&mode=subdomains"
+      },
+      {
+        "name": "Backlink - URL",
+        "url": "https://ahrefs.com/backlink-checker/?input=%currentUrl%&mode=exact"
+      },
+      {
+        "name": "Similarsites",
+        "url": "https://www.similarsites.com/site/%currentDomain%/"
+      },
+      {
+        "name": "Similarweb",
+        "url": "https://www.similarweb.com/website/%currentDomain%/competitors/"
+      },
+      {
+        "name": "Broken Link - Website",
+        "url": "https://ahrefs.com/broken-link-checker/?input=%currentDomain%&mode=subdomains"
+      },
+      {
+        "name": "Broken Link - URL",
+        "url": "https://ahrefs.com/broken-link-checker/?input=%currentUrl%&mode=exact"
+      },
+      {
+        "name": "Website Authority",
+        "url": "https://ahrefs.com/website-authority-checker/?input=%currentDomain%"
+      },
+      {
+        "name": "PageSpeed Insights",
+        "url": "https://pagespeed.web.dev/analysis?url=%currentDomain%"
+      }
+    ]
+  },
+  {
+    "name": "Domain Analysis",
+    "engines": [
+      {
+        "name": "Whois",
+        "url": "https://www.whois.com/whois/%selectedText%"
+      },
+      {
+        "name": "who.is",
+        "url": "https://who.is/whois/%selectedText%"
+      },
+      {
+        "name": "SpaceShip",
+        "url": "https://www.spaceship.com/domain-search/?query=%selectedText%"
+      },
+      {
+        "name": "Namecheap",
+        "url": "https://www.namecheap.com/domains/registration/results/?domain=%selectedText%"
+      },
+      {
+        "name": "CurrentDomain-Whois",
+        "url": "https://www.whois.com/whois/%currentDomain%"
+      },
+      {
+        "name": "CurrentDomain-who.is",
+        "url": "https://who.is/whois/%currentDomain%"
+      },
+      {
+        "name": "Domain Prices Comparison",
+        "url": "https://tld-list.com/?q=%selectedText%"
+      }
+    ]
+  },
+  {
+    "name": "Image",
+    "engines": [
+      {
+        "name": "Baidu Image",
+        "url": "https://image.baidu.com/search/index?tn=baiduimage&ie=utf-8&word=%selectedText%"
+      },
+      {
+        "name": "Bing Image",
+        "url": "https://www.bing.com/images/search?q=%selectedText%"
+      },
+      {
+        "name": "Pixiv",
+        "url": "https://www.pixiv.net/search.php?word=%selectedText%"
+      },
+      {
+        "name": "Flickr",
+        "url": "https://www.flickr.com/search/?q=%selectedText%"
+      },
+      {
+        "name": "Pinterest",
+        "url": "https://www.pinterest.com/search/pins/?q=%selectedText%&rs=typed&term_meta"
+      },
+      {
+        "name": "Yandex Image",
+        "url": "https://yandex.com/images/search?from=tabbar&text=%selectedText%"
+      },
+      {
+        "name": "Google Image",
+        "url": "https://www.google.com/search?q=%selectedText%&tbm=isch"
+      },
+      {
+        "name": "vector illustrations",
+        "url": "https://storyset.com/search?q=%selectedText%"
+      }
+    ]
+  },
+  {
+    "name": "Archive",
+    "engines": [
+      {
+        "name": "Wayback History",
+        "url": "https://web.archive.org/web/*/%currentUrl%"
+      },
+      {
+        "name": "Save to Wayback",
+        "url": "https://web.archive.org/save/%currentUrl%"
+      },
+      {
+        "name": "Save to archiveapp.ph",
+        "url": "https://archiveapp.ph/share/?url=%currentUrl%"
+      },
+      {
+        "name": "Save to archive.is",
+        "url": "https://archive.is/?run=1&url=%currentUrl%"
+      },
+      {
+        "name": "Save to archive.today",
+        "url": "https://archive.today/submit/?url=%currentUrl%"
+      }
+    ]
+  },
+  {
+    "name": "Video",
+    "disable": true,
+    "engines": [
+      {
+        "name": "YouTube",
+        "url": "https://www.youtube.com/results?search_query=%selectedText%"
+      },
+      {
+        "name": "bilibili",
+        "url": "https://search.bilibili.com/all?keyword=%selectedText%"
+      },
+
+      {
+        "name": "AcFun",
+        "url": "https://www.acfun.cn/search/?type=complex&keyword=%selectedText%"
+      },
+      {
+        "name": "niconico",
+        "url": "https://www.nicovideo.jp/search/%selectedText%"
+      }
+    ]
+  }
+]

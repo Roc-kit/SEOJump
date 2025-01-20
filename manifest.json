@@ -1,0 +1,58 @@
+{
+  "manifest_version": 3,
+  "name": "Easy Switch Search",
+  "version": "1.0",
+  "description": "Quickly switch between search engines",
+  "permissions": [
+    "storage",
+    "contextMenus",
+    "tabs"
+  ],
+  "host_permissions": [
+    "*://*/*"
+  ],
+  "web_accessible_resources": [{
+    "resources": [
+      "config/*",
+      "icons/*",
+      "image/*"
+    ],
+    "matches": ["*://*/*"]
+  }],
+  "content_scripts": [
+    {
+      "matches": ["*://*/*"],
+      "css": ["styles/content.css"],
+      "js": ["content.js"]
+    }
+  ],
+  "action": {
+    "default_title": "Easy Switch Search",
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab": true,
+    "css": [
+      "styles/variables.css",
+      "styles/layout.css",
+      "styles/header.css",
+      "styles/navigation.css",
+      "styles/engine.css",
+      "styles/components.css"
+    ]
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}

@@ -1,0 +1,494 @@
+
+.btn,
+.add-category,
+.add-engine,
+.delete-category,
+.delete-engine {
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+
+.btn {
+    padding: 6px 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background: var(--primary-color);
+    color: white;
+    border: none;
+}
+
+
+
+.add-category {
+    padding: 8px 16px;
+    margin: 10px 0;
+    background-color: white;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    display: block;
+    margin-left: auto;
+}
+
+
+
+.add-engine {
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: auto;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+
+.add-category:hover,
+.add-engine:hover {
+    background: rgb(114, 89,254);
+    border-color: var(--primary-color);
+    color: white;
+}
+
+
+.delete-category,
+.delete-engine {
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: inherit;
+}
+
+
+.delete-category:hover,
+.delete-engine:hover {
+    background: #dc3545;
+    color: white;
+    border-color: #dc3545;
+}
+
+.delete-category:hover .delete-icon,
+.delete-engine:hover .delete-icon {
+    filter: brightness(0) invert(1);
+}
+
+
+.delete-engine {
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+
+.engine-item:hover .delete-engine {
+    opacity: 1;
+}
+
+
+.delete-icon {
+    width: 16px;
+    height: 16px;
+    display: block;
+    transition: filter 0.2s;
+}
+
+
+.button-group {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    padding: 20px;
+    width: var(--sidebar-width);
+    box-sizing: border-box;
+    position: fixed;
+    bottom: 0;
+    border-top: 1px solid rgb(114, 89,254);
+}
+
+
+.button-group button {
+    padding: 8px;
+    border: 1px solid rgb(114, 89,254);
+    border-radius: 4px;
+    background: white;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+
+.button-group button:hover {
+    background: rgb(114, 89,254);
+    color: white;
+    border-color: rgb(114, 89,254);
+}
+
+
+
+.btn,
+.add-category,
+.add-engine,
+.delete-category,
+.delete-engine {
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+
+.btn {
+    padding: 6px 12px;
+    border: 1px solid rgb(114, 89,254);
+    border-radius: 4px;
+    background: rgb(114, 89,254);
+    color: white;
+    border: none;
+}
+
+
+
+.add-category {
+    padding: 8px 16px;
+    margin: 10px 0;
+    background-color: white;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    display: block;
+    margin-left: auto;
+}
+
+
+
+.add-engine {
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: auto;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+
+.add-category:hover,
+.add-engine:hover {
+    background: rgb(114, 89,254);
+    border-color: rgb(114, 89,254);
+    color: white;
+}
+
+
+.delete-category,
+.delete-engine {
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+.delete-category:hover,
+.delete-engine:hover {
+    background: #dc3545;
+    color: white;
+    border-color: #dc3545;
+}
+
+
+.delete-engine {
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+
+.engine-item:hover .delete-engine {
+    opacity: 1;
+}
+
+
+
+.button-group {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    padding: 20px;
+    width: var(--sidebar-width);
+    box-sizing: border-box;
+    position: fixed;
+    bottom: 0;
+    border-top: 1px solid var(--border-color);
+}
+
+
+.button-group button {
+    padding: 8px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background: white;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+
+.button-group button:hover {
+    background: rgb(114, 89,254);
+    color: white;
+    border-color: rgb(114, 89,254);
+}
+
+
+
+.delete-icon {
+    width: 16px;
+    height: 16px;
+    display: block;
+    fill: currentColor;
+}
+
+
+.drag-handle {
+    width: 16px;
+    height: 16px;
+    cursor: grab;
+    user-select: none;
+    display: block;
+    fill: currentColor;
+    color: #666;
+}
+
+
+.drag-handle:active {
+    cursor: grabbing;
+}
+
+
+.drag-handle {
+    opacity: 1;
+}
+
+
+.engine-item .drag-handle {
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+
+.engine-item:hover .drag-handle {
+    opacity: 1;
+}
+
+
+.sortable-ghost {
+    opacity: 0.5;
+    background: var(--hover-color);
+}
+
+
+.sortable-chosen {
+    background: var(--hover-color);
+}
+
+
+.message {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 12px 20px;
+    border-radius: 4px;
+    background: white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+    animation: slideIn 0.3s ease-out;
+}
+
+
+.message.success {
+    background: #28a745;
+    color: white;
+}
+
+
+.message.error {
+    background: #dc3545;
+    color: white;
+}
+
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+
+.placeholder-info {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+
+.placeholder-info th,
+.placeholder-info td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+}
+
+
+.placeholder-info th {
+    background: #f5f5f5;
+    font-weight: 600;
+}
+
+
+.highlight {
+    color: rgb(114, 89,254);
+    font-weight: 600;
+}
+
+
+.setting-group {
+    margin-bottom: 20px;
+}
+
+
+.setting-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+
+.setting-group select {
+    width: 100%;
+    max-width: 300px;
+    padding: 8px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+}
+
+
+.section-icon {
+    vertical-align: middle;
+    margin-right: 8px;
+    stroke: #666;
+}
+
+
+h2 {
+    display: flex;
+    align-items: center;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+
+.menu-divider {
+    height: 1px;
+    background-color: #e0e0e0;
+    margin: 8px 16px;
+}
+
+
+.format-dialog {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.format-dialog-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    min-width: 300px;
+    text-align: center;
+}
+
+.format-dialog-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.format-option {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: none;
+    border-radius: 4px;
+    background-color: rgb(114, 89,254);
+    color: white;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 14px;
+    transition: background-color 0.2s;
+}
+
+.format-option:hover {
+    background-color: rgb(100, 72, 253);
+}
+
+.format-note {
+    font-size: 12px;
+    color: #666;
+    margin: 10px 0;
+    font-style: italic;
+}
+
+.format-cancel {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin-top: 20px;
+    border: none;
+    border-radius: 4px;
+    background-color: #ddd;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    transition: background-color 0.2s;
+}
+
+.format-cancel:hover {
+    background-color: #ccc;
+}

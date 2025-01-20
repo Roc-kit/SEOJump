@@ -1,0 +1,40 @@
+# IDE and Editor files
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+.windsurfrules
+
+# Dependencies
+node_modules/
+package-lock.json
+yarn.lock
+*.log
+
+# Build output
+dist/
+build/
+*.crx
+*.pem
+*.zip
+
+# Operating System
+.DS_Store
+Thumbs.db
+
+# Local development
+*.local
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Debug logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Chrome Extension specific
+*.crx
+*.pem
+*.zip

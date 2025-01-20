@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Easy Switch Search Options</title>
+    <link rel="stylesheet" href="styles/variables.css">
+    <link rel="stylesheet" href="styles/layout.css">
+    <link rel="stylesheet" href="styles/header.css">
+    <link rel="stylesheet" href="styles/navigation.css">
+    <link rel="stylesheet" href="styles/engine.css">
+    <link rel="stylesheet" href="styles/components.css">
+</head>
+<body>
+    <div class="container">
+        <div class="nav-sidebar-container">
+            <div class="nav-sidebar">
+
+                <div class="nav-header">
+                    <img src="icons/icon48.png" alt="Icon" class="nav-icon">
+                    <h1><a href="#top" class="nav-title">Easy Switch Search</a></h1>
+                </div>
+
+                <ul class="nav-menu">
+                </ul>
+                <div class="button-group">
+                    <button id="saveBtn">Save</button>
+                    <button id="exportBtn">Export</button>
+                    <button id="importBtn">Import</button>
+                    <button id="resetBtn">Reset</button>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="main-content">
+            <div class="content">
+                <div id="top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})"></div>
+
+                <!-- Header Section -->
+                <div class="header-section">
+                    <div class="header-main">
+                        <div class="header-left">
+                            <img src="icons/icon48.png" alt="Logo" class="header-logo">
+                            <a href="https://github.com/Roc-kit/EasySwitchSearch" target="_blank" class="header-title">
+                                Easy Switch Search
+                            </a>
+                        </div>
+                        <div class="header-right">
+                            <a href="https://twitter.com/yourusername" target="_blank" class="social-link">
+                                <img src="image/twitter.svg" alt="Twitter" class="social-icon">
+                            </a>
+                            <a href="https://github.com/Roc-kit/EasySwitchSearch" target="_blank" class="social-link">
+                                <img src="image/github.svg" alt="GitHub" class="social-icon">
+                            </a>
+                        </div>
+                    </div>
+                    <div class="header-divider"></div>
+                    <div class="header-support">
+                        <span>Like this extension? A coffee would make my day! 😊</span>
+                        <a href="https://www.buymeacoffee.com/yourusername" target="_blank" class="coffee-link">
+                            Buy me a coffee ☕ ➡
+                        </a>
+                    </div>
+                    <div class="header-divider"></div>
+                </div>
+
+                <div id="category-order" class="toolbar">
+                    <h2>
+                        <svg class="section-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="21" y1="10" x2="3" y2="10"></line>
+                            <line x1="21" y1="6" x2="3" y2="6"></line>
+                            <line x1="21" y1="14" x2="3" y2="14"></line>
+                            <line x1="21" y1="18" x2="3" y2="18"></line>
+                        </svg>
+                        Category Order
+                    </h2>
+                    <div class="category-order-section">
+                        <div id="category-order-list">
+                            <!-- Categories will be dynamically added here -->
+                        </div>
+                    </div>
+                </div>
+
+                <div id="placeholders" class="toolbar">
+                    <h2>
+                        <svg class="section-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="16" x2="12" y2="12"></line>
+                            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                        </svg>
+                        Placeholders Explained
+                    </h2>
+                    <table class="placeholder-info">
+                        <tr>
+                            <th>Placeholder</th>
+                            <th>Description</th>
+                            <th>Example</th>
+                        </tr>
+                        <tr>
+                            <td>%selectedText%</td>
+                            <td>Selected text or search keyword</td>
+                            <td>https://www.google.com/search?q=<span class="highlight">%selectedText%</span></td>
+                        </tr>
+                        <tr>
+                            <td>%currentUrl%</td>
+                            <td>Current page URL</td>
+                            <td>https://web.archive.org/web/*/<span class="highlight">%currentUrl%</span></td>
+                        </tr>
+                        <tr>
+                            <td>%currentDomain%</td>
+                            <td>Current page domain</td>
+                            <td>https://www.similarweb.com/website/<span class="highlight">%currentDomain%</span>/competitors/</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div id="search-engines" class="toolbar">
+                    <h2>
+                        <svg class="section-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
+                        Search Engines
+                    </h2>
+                    <div id="categories-container">
+                        <!-- Categories will be dynamically added here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden file inputs for import -->
+    <input type="file" id="importFromJson" style="display: none;" accept=".json">
+    <input type="file" id="importFromCSV" style="display: none;" accept=".csv">
+
+    <script src="options.js"></script>
+    <script src="utils/Sortable.min.js"></script>
+</body>
+</html>
