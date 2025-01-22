@@ -1,13 +1,10 @@
-let engines = [];                  
-let hasUnsavedChanges = false;    
-
+let engines = [];
+let hasUnsavedChanges = false;
 
 const deleteIconUrl = chrome.runtime.getURL('image/delete.svg');
 const dragIconUrl = chrome.runtime.getURL('image/drag.svg');
 const deleteIcon = `<img src="${deleteIconUrl}" class="delete-icon" alt="Delete">`;
 const dragIcon = `<img src="${dragIconUrl}" class="drag-handle" alt="Drag">`;
-
-
 
 function showMessage(message, type = 'info') {
     const messageDiv = document.createElement('div');
@@ -17,42 +14,27 @@ function showMessage(message, type = 'info') {
     setTimeout(() => messageDiv.remove(), 3000);
 }
 
-/**
- * Convert field to CSV format
- * Rules:
- * 1. All fields are wrapped in double quotes
- * 2. Double quotes within fields are converted to two double quotes
- */
 function escapeCSVField(field) {
-    // Convert null or undefined to an empty string
     if (field == null) field = '';
-    // Convert non-strings to strings
     field = String(field);
-    // Replace double quotes within the field with two double quotes, then wrap the entire field in double quotes
     return `"${field.replace(/"/g, '""')}"`;
 }
 
-
 function parseCSVField(field) {
     field = field.trim();
-    // If the field is wrapped in double quotes
     if (field.startsWith('"') && field.endsWith('"')) {
-        // Remove the double quotes at the beginning and end, then replace two double quotes with one
         return field.slice(1, -1).replace(/""/g, '"');
     }
     return field;
 }
 
-
 function exportToCSV() {
-
     const headers = ['CategoryName', 'CategoryEnabled', 'EngineName', 'EngineURL', 'EngineEnabled', 'EngineFavicon'];
     const rows = [headers.map(escapeCSVField)];
 
-
     engines.forEach(category => {
         const categoryEnabled = category.disable === true ? 'false' : 'true';
-        
+
         category.engines.forEach(engine => {
             const engineEnabled = engine.disable === true ? 'false' : 'true';
             const row = [
@@ -67,7 +49,6 @@ function exportToCSV() {
         });
     });
 
-    // Join each row of data with commas
     const content = rows.map(row => row.join(',')).join('\n');
     const blob = new Blob([content], { type: 'text/csv' });
     const url = URL.createObjectURL(blob);
@@ -81,17 +62,14 @@ function exportToCSV() {
     URL.revokeObjectURL(url);
 }
 
-
 async function importFromCSV(e) {
     try {
         const file = e.target.files[0];
         if (!file) return;
 
         const text = await file.text();
-        // Split into rows, ignoring empty rows
         const rows = text.split('\n').filter(row => row.trim());
-        
-        // Validate the header and find the index of the required columns
+
         const headers = rows[0].split(',').map(parseCSVField);
         const requiredColumns = {
             categoryName: headers.findIndex(h => h === 'CategoryName'),
@@ -99,54 +77,45 @@ async function importFromCSV(e) {
             engineUrl: headers.findIndex(h => h === 'EngineURL')
         };
 
-        // Check if the required columns exist
         const missingColumns = Object.entries(requiredColumns)
             .filter(([_, index]) => index === -1)
-            .map(([key]) => key === 'categoryName' ? 'CategoryName' : 
+            .map(([key]) => key === 'categoryName' ? 'CategoryName' :
                           key === 'engineName' ? 'EngineName' : 'EngineURL');
-            
+
         if (missingColumns.length > 0) {
             throw new Error(`Required columns missing: ${missingColumns.join(', ')}`);
         }
 
-        // Find the index of the optional columns
         const optionalColumns = {
             categoryEnabled: headers.findIndex(h => h === 'CategoryEnabled'),
             engineEnabled: headers.findIndex(h => h === 'EngineEnabled'),
             engineFavicon: headers.findIndex(h => h === 'EngineFavicon')
         };
 
-        // Parse the data
         const newEngines = [];
         let currentCategory = null;
 
         for (let i = 1; i < rows.length; i++) {
-            // Split the CSV row using a regular expression, considering commas within quotes
             const row = rows[i].match(/(".*?"|[^,]+)(?=\s*,|\s*$)/g)
                 .map(field => parseCSVField(field));
-            
-            // Get the required fields
+
             const categoryName = row[requiredColumns.categoryName];
             const engineName = row[requiredColumns.engineName];
             const engineUrl = row[requiredColumns.engineUrl];
 
-            // Skip empty rows
             if (!categoryName && !engineName && !engineUrl) continue;
 
-            // Get the optional fields
-            const categoryEnabled = optionalColumns.categoryEnabled !== -1 ? 
+            const categoryEnabled = optionalColumns.categoryEnabled !== -1 ?
                 row[optionalColumns.categoryEnabled] : 'true';
-            const engineEnabled = optionalColumns.engineEnabled !== -1 ? 
+            const engineEnabled = optionalColumns.engineEnabled !== -1 ?
                 row[optionalColumns.engineEnabled] : 'true';
-            const engineFavicon = optionalColumns.engineFavicon !== -1 ? 
+            const engineFavicon = optionalColumns.engineFavicon !== -1 ?
                 row[optionalColumns.engineFavicon] : '';
 
-            // If it's a new category
             if (!currentCategory || currentCategory.name !== categoryName) {
                 currentCategory = {
                     name: categoryName
                 };
-                // Only add the disable field when the value is false
                 if (categoryEnabled.toLowerCase() === 'false') {
                     currentCategory.disable = true;
                 }
@@ -154,25 +123,22 @@ async function importFromCSV(e) {
                 newEngines.push(currentCategory);
             }
 
-            // Add the search engine
             const engine = {
                 name: engineName,
                 url: engineUrl
             };
-            
-            // Only add the optional fields when necessary
+
             if (engineEnabled.toLowerCase() === 'false') {
                 engine.disable = true;
             }
             if (engineFavicon && engineFavicon.trim()) {
                 engine.favicon = engineFavicon.trim();
             }
-            
+
             currentCategory.engines.push(engine);
         }
 
         if (newEngines.length > 0) {
-            // Clean and optimize the data
             const cleanedEngines = cleanupData(newEngines);
 
             engines = cleanedEngines;
@@ -188,7 +154,6 @@ async function importFromCSV(e) {
     }
 }
 
-
 async function saveSettings() {
     try {
         await chrome.storage.local.set({
@@ -202,12 +167,10 @@ async function saveSettings() {
     }
 }
 
-
 async function loadSettings() {
     try {
         const data = await chrome.storage.local.get(['searchEngines']);
-        
-        // Load search engine data
+
         if (data.searchEngines && Array.isArray(data.searchEngines)) {
             engines = data.searchEngines;
         } else {
@@ -215,7 +178,7 @@ async function loadSettings() {
             engines = await response.json();
             await saveSettings();
         }
-        
+
         return engines[0]?.name || '';
     } catch (error) {
         console.error('Failed to load settings:', error);
@@ -224,16 +187,13 @@ async function loadSettings() {
     }
 }
 
-// UI Update Function: Update Category Menu
 function updateCategoryMenu() {
     const menu = document.querySelector('.nav-menu');
     if (!menu) return;
 
-    // Clear the existing options
     menu.innerHTML = '';
 
-    // Add fixed navigation items
-    const sections = ['category-order', 'placeholders', 'search-engines'];
+    const sections = ['placeholders', 'search-engines'];
     sections.forEach((id, index) => {
         const section = document.getElementById(id);
         if (section) {
@@ -249,68 +209,61 @@ function updateCategoryMenu() {
         }
     });
 
-    // Add search engine categories
+    const categoriesContainer = document.createElement('div');
+    categoriesContainer.className = 'category-menu-list';
+    menu.appendChild(categoriesContainer);
+
     engines.forEach((category, index) => {
         const li = document.createElement('li');
-        li.className = 'submenu-item';  
+        li.className = 'submenu-item';
+        li.dataset.index = index;
+        const dragHandle = document.createElement('span');
+        dragHandle.className = 'drag-handle';
+        dragHandle.innerHTML = dragIcon;
         const a = document.createElement('a');
         a.href = `#category-${index}`;
         a.textContent = category.name;
+        li.appendChild(dragHandle);
         li.appendChild(a);
-        menu.appendChild(li);
+        categoriesContainer.appendChild(li);
+    });
+
+    if (categoriesContainer._sortable) {
+        categoriesContainer._sortable.destroy();
+    }
+    categoriesContainer._sortable = new Sortable(categoriesContainer, {
+        animation: 150,
+        handle: '.drag-handle',
+        onEnd: function(evt) {
+            const oldIndex = evt.oldIndex;
+            const newIndex = evt.newIndex;
+            if (oldIndex !== newIndex) {
+                const item = engines.splice(oldIndex, 1)[0];
+                engines.splice(newIndex, 0, item);
+                markAsUnsaved();
+                renderAll();
+            }
+        }
     });
 }
 
-/**
- * Render the category order list and create draggable category list items
- * This function displays the sorting interface for all categories, allowing users to adjust category order through drag and drop
- */
-function renderCategoryOrder() {
-    // Get the list container for displaying category order
-    const orderList = document.getElementById('category-order-list');
-    // If container not found, return immediately
-    if (!orderList) return;
-
-    // Clear existing content in the list
-    orderList.innerHTML = '';
-    engines.forEach((category, index) => {
-        const item = document.createElement('div');
-        item.className = 'category-order-item';
-        item.dataset.index = index;
-
-
-        item.innerHTML = `
-            <span class="drag-handle">${dragIcon}</span>
-            <span class="category-name">${category.name}</span>
-        `;
-
-        orderList.appendChild(item);
-    });
-}
-
-/**
- * Render the search engine configuration interface, including all categories and search engines under each category
- * This is the main settings interface where users can add, modify, and delete categories and search engines
- */
 function renderSearchEngines() {
-    // Get the container for displaying search engine configuration
     const container = document.getElementById('categories-container');
-    // If container not found, return immediately
     if (!container) return;
 
-    // Clear existing content in the container
     container.innerHTML = '';
-    // Iterate through all categories to create configuration area for each
     engines.forEach((category, categoryIndex) => {
         const categoryDiv = document.createElement('div');
         categoryDiv.className = 'category-section';
         categoryDiv.id = `category-${categoryIndex}`;
         categoryDiv.dataset.index = categoryIndex;
 
-
         categoryDiv.innerHTML = `
             <div class="category-header">
-                <input type="text" class="category-name" value="${category.name}" placeholder="Category Name">
+                <input type="text" class="category-name" value="${category.name}"
+                    data-default="${category.name === 'New Category' ? 'true' : 'false'}"
+                    data-original="${category.name}"
+                    placeholder="Category Name">
                 <label class="switch category-switch">
                     <input type="checkbox" class="category-toggle" ${!category.disable ? 'checked' : ''}>
                     <span class="slider"></span>
@@ -321,7 +274,10 @@ function renderSearchEngines() {
                 ${category.engines.map((engine, engineIndex) => `
                     <div class="engine-item" data-index="${engineIndex}">
                         <span class="drag-handle">${dragIcon}</span>
-                        <input type="text" class="engine-name" value="${engine.name}" placeholder="Engine Name">
+                        <input type="text" class="engine-name" value="${engine.name}"
+                            data-default="${engine.name === 'New Engine' ? 'true' : 'false'}"
+                            data-original="${engine.name}"
+                            placeholder="Engine Name">
                         <input type="text" class="engine-url" value="${engine.url}" placeholder="Search URL with %selectedText%">
                         <label class="switch">
                             <input type="checkbox" class="engine-toggle" ${!engine.disable ? 'checked' : ''}>
@@ -333,7 +289,36 @@ function renderSearchEngines() {
                 <button class="add-engine">+</button>
             </div>
         `;
-        // Add the category container to the main container
+
+        const inputs = categoryDiv.querySelectorAll('input[type="text"]');
+        inputs.forEach(input => {
+            input.addEventListener('focus', function() {
+                if (this.dataset.default === 'true' && this.value === this.dataset.original) {
+                    this.value = '';
+                }
+            });
+
+            input.addEventListener('blur', function() {
+                if (this.value.trim() === '') {
+                    if (this.classList.contains('category-name')) {
+                        this.value = this.dataset.original || 'New Category';
+                    } else if (this.classList.contains('engine-name')) {
+                        this.value = this.dataset.original || 'New Engine';
+                    } else if (this.classList.contains('engine-url')) {
+                        this.value = this.dataset.original || '';
+                    }
+                }
+            });
+
+            if (input.classList.contains('engine-url')) {
+                input.addEventListener('dblclick', function(e) {
+                    e.preventDefault();
+                    currentEditingUrlInput = this;
+                    showUrlEditModal(this.value);
+                });
+            }
+        });
+
         container.appendChild(categoryDiv);
     });
 
@@ -344,22 +329,13 @@ function renderSearchEngines() {
     container.appendChild(addCategoryBtn);
 }
 
-/**
- * Update the navigation menu, displaying all available navigation items and categories
- * This function is responsible for updating the left-side navigation menu, including fixed navigation items and dynamic category list
- */
 function updateNavMenu() {
-    // Get the navigation menu container
     const navMenu = document.querySelector('.nav-menu');
-    // If container not found, return immediately
     if (!navMenu) return;
 
-    // Clear existing menu content
     navMenu.innerHTML = '';
 
-    // Get all toolbar areas
     const toolbars = document.querySelectorAll('.toolbar');
-    // Iterate through each toolbar to create navigation items
     toolbars.forEach(toolbar => {
         const id = toolbar.id;
         const title = toolbar.querySelector('h2')?.textContent || id;
@@ -370,7 +346,6 @@ function updateNavMenu() {
         a.textContent = title;
         li.appendChild(a);
 
-        // For search engine area, need to add submenu container
         if (id === 'search-engines') {
             const ul = document.createElement('ul');
             ul.className = 'category-menu';
@@ -381,29 +356,17 @@ function updateNavMenu() {
     });
 }
 
-/**
- * Unified render function, update all UI elements
- */
 async function renderAll() {
     updateNavMenu();
-    renderCategoryOrder();
     renderSearchEngines();
     await updateCategoryMenu();
     initSortable();
 }
 
-/**
- * Mark that there are unsaved changes, used to prompt user to save modifications
- */
 function markAsUnsaved() {
-    // Set unsaved changes flag to true
     hasUnsavedChanges = true;
 }
 
-/**
- * Handle category order events, including move up and move down operations
- * @param {Event} e Event object
- */
 function handleCategoryOrderEvents(e) {
     const button = e.target.closest('button');
     if (!button) return;
@@ -411,7 +374,6 @@ function handleCategoryOrderEvents(e) {
     const item = button.closest('.category-order-item');
     if (!item) return;
 
-    // Get the category index
     const index = parseInt(item.dataset.index);
     if (button.classList.contains('move-up') && index > 0) {
         [engines[index - 1], engines[index]] = [engines[index], engines[index - 1]];
@@ -424,17 +386,13 @@ function handleCategoryOrderEvents(e) {
     }
 }
 
-/**
- * Handle search engine related events, including name modification, deletion, and addition operations
- * @param {Event} e Event object
- */
 function handleSearchEngineEvents(e) {
     const target = e.target;
-    
+
     if (target.classList.contains('category-name')) {
         const categorySection = target.closest('.category-section');
         if (!categorySection) return;
-        
+
         const index = parseInt(categorySection.dataset.index);
         engines[index].name = target.value;
         markAsUnsaved();
@@ -442,22 +400,20 @@ function handleSearchEngineEvents(e) {
         return;
     }
 
-    // Handle category enable/disable state toggle
     if (target.classList.contains('category-toggle')) {
         const categorySection = target.closest('.category-section');
         if (!categorySection) return;
-        
+
         const index = parseInt(categorySection.dataset.index);
         engines[index].disable = !target.checked;
         markAsUnsaved();
         return;
     }
 
-    // Handle category deletion
     if (target.classList.contains('delete-category') || target.closest('.delete-category')) {
         const categorySection = (target.closest('.category-section') || target.closest('.delete-category')?.closest('.category-section'));
         if (!categorySection || engines.length <= 1) return;
-        
+
         const index = parseInt(categorySection.dataset.index);
         engines.splice(index, 1);
         markAsUnsaved();
@@ -465,11 +421,10 @@ function handleSearchEngineEvents(e) {
         return;
     }
 
-    // Handle adding search engine
     if (target.classList.contains('add-engine')) {
         const categorySection = target.closest('.category-section');
         if (!categorySection) return;
-        
+
         const index = parseInt(categorySection.dataset.index);
         engines[index].engines.push({
             name: 'New Engine',
@@ -480,10 +435,8 @@ function handleSearchEngineEvents(e) {
         return;
     }
 
-    // Handle search engine item events
     const engineItem = target.closest('.engine-item');
     if (engineItem) {
-        // Get the category container element
         const categorySection = engineItem.closest('.category-section');
         const categoryIndex = parseInt(categorySection.dataset.index);
         const engineIndex = parseInt(engineItem.dataset.index);
@@ -506,9 +459,6 @@ function handleSearchEngineEvents(e) {
     }
 }
 
-/**
- * Handle adding new category operation
- */
 function handleAddCategory() {
     engines.push({
         name: 'New Category',
@@ -521,9 +471,6 @@ function handleAddCategory() {
     renderAll();
 }
 
-/**
- * Export configuration to JSON file
- */
 async function exportToJson() {
     const settings = {
         searchEngines: engines
@@ -541,17 +488,10 @@ async function exportToJson() {
     URL.revokeObjectURL(url);
 }
 
-/**
- * Export as CSV format (tab-separated text file)
- */
 async function exportToExcel() {
     exportToCSV();
 }
 
-
-/**
- * Export configuration
- */
 async function exportSettings() {
     const dialog = document.createElement('div');
     dialog.className = 'format-dialog';
@@ -567,7 +507,6 @@ async function exportSettings() {
 
     document.body.appendChild(dialog);
 
-    // Add event listeners
     dialog.addEventListener('click', (e) => {
         if (e.target.classList.contains('json-format')) {
             dialog.remove();
@@ -581,9 +520,6 @@ async function exportSettings() {
     });
 }
 
-/**
- * Import from JSON file
- */
 async function importFromJson(e) {
     try {
         const file = e.target.files[0];
@@ -606,16 +542,10 @@ async function importFromJson(e) {
     }
 }
 
-/**
- * Import from CSV format
- */
 async function importFromExcel(e) {
     importFromCSV(e);
 }
 
-/**
- * Import configuration
- */
 async function importSettings() {
     const dialog = document.createElement('div');
     dialog.className = 'format-dialog';
@@ -631,7 +561,6 @@ async function importSettings() {
 
     document.body.appendChild(dialog);
 
-    // Add event listeners
     dialog.addEventListener('click', (e) => {
         if (e.target.classList.contains('json-format')) {
             dialog.remove();
@@ -645,9 +574,6 @@ async function importSettings() {
     });
 }
 
-/**
- * Reset all settings to default values
- */
 async function resetSettings() {
     if (confirm('Are you sure you want to reset all settings to default? This cannot be undone.')) {
         try {
@@ -664,38 +590,9 @@ async function resetSettings() {
     }
 }
 
-/**
- * Initialize drag and drop sorting functionality
- */
 function initSortable() {
-    const categoryList = document.getElementById('category-order-list');
-    if (categoryList && categoryList._sortable) {
-        categoryList._sortable.destroy();
-    }
-
-    if (categoryList) {
-        categoryList._sortable = new Sortable(categoryList, {
-            animation: 150,
-            // Drag handle selector
-            handle: '.drag-handle',
-            onEnd: function(evt) {
-                const oldIndex = evt.oldIndex;
-                const newIndex = evt.newIndex;
-                if (oldIndex !== newIndex) {
-                    const item = engines.splice(oldIndex, 1)[0];
-                    engines.splice(newIndex, 0, item);
-                    markAsUnsaved();
-                    renderAll();
-                }
-            }
-        });
-    }
-
-    // Get all search engine list containers
     document.querySelectorAll('.engines-list').forEach(list => {
-        // If search engine list container exists
         if (list._sortable) {
-            // Destroy existing sortable instance
             list._sortable.destroy();
         }
         list._sortable = new Sortable(list, {
@@ -719,21 +616,14 @@ function initSortable() {
     });
 }
 
-/**
- * Clean and optimize data object, remove extra spaces and empty values
- * @param {Object} obj Object to clean
- * @returns {Object} Cleaned object
- */
 function cleanupData(obj) {
     if (typeof obj !== 'object' || obj === null) {
-        // If it's a string, clean spaces
         if (typeof obj === 'string') {
             return obj.trim();
         }
         return obj;
     }
 
-    // If it's an array
     if (Array.isArray(obj)) {
         return obj.map(item => cleanupData(item)).filter(item => {
             if (typeof item === 'string') {
@@ -743,7 +633,6 @@ function cleanupData(obj) {
         });
     }
 
-    // If it's an object
     const cleaned = {};
     for (const key in obj) {
         const value = cleanupData(obj[key]);
@@ -754,9 +643,6 @@ function cleanupData(obj) {
     return cleaned;
 }
 
-/**
- * Show export format selection dialog
- */
 function showExportDialog() {
     const dialog = document.createElement('div');
     dialog.className = 'format-dialog';
@@ -772,7 +658,6 @@ function showExportDialog() {
 
     document.body.appendChild(dialog);
 
-    // Add event listeners
     dialog.addEventListener('click', (e) => {
         if (e.target.classList.contains('json-format')) {
             dialog.remove();
@@ -786,9 +671,6 @@ function showExportDialog() {
     });
 }
 
-/**
- * Show import format selection dialog
- */
 function showImportDialog() {
     const dialog = document.createElement('div');
     dialog.className = 'format-dialog';
@@ -804,7 +686,6 @@ function showImportDialog() {
 
     document.body.appendChild(dialog);
 
-    // Add event listeners
     dialog.addEventListener('click', (e) => {
         if (e.target.classList.contains('json-format')) {
             dialog.remove();
@@ -818,47 +699,80 @@ function showImportDialog() {
     });
 }
 
-// Initialization operations after page load
+let currentEditingUrlInput = null;
+
+function showUrlEditModal(currentUrl) {
+    const modal = document.getElementById('urlEditModal');
+    const modalInput = modal.querySelector('.modal-url-input');
+    const modalSaveBtn = document.getElementById('modalSaveBtn');
+    const modalCancelBtn = document.getElementById('modalCancelBtn');
+    const placeholdersContainer = document.getElementById('modal-placeholders');
+    
+    const originalPlaceholders = document.getElementById('placeholders');
+    placeholdersContainer.innerHTML = originalPlaceholders.innerHTML;
+    
+    modalInput.value = currentUrl;
+    
+    modal.style.display = 'block';
+    modalInput.focus();
+    modalInput.select();
+    
+    const saveChanges = () => {
+        if (currentEditingUrlInput && modalInput.value.trim() !== '') {
+            currentEditingUrlInput.value = modalInput.value.trim();
+            markAsUnsaved();
+        }
+        modal.style.display = 'none';
+        currentEditingUrlInput = null;
+    };
+    
+    const cancelChanges = () => {
+        modal.style.display = 'none';
+        currentEditingUrlInput = null;
+    };
+    
+    modalSaveBtn.onclick = saveChanges;
+    modalCancelBtn.onclick = cancelChanges;
+    
+    modalInput.onkeydown = (e) => {
+        if (e.key === 'Enter' && e.ctrlKey) {
+            saveChanges();
+        } else if (e.key === 'Escape') {
+            cancelChanges();
+        }
+    };
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
     try {
-        // Load configuration
         const firstCategory = await loadSettings();
-        
-        // Initialize drag and drop sorting
+
         initSortable();
-        
-        // Update UI
+
         renderAll();
-        
-        // Add event listeners
+
         document.getElementById('saveBtn')?.addEventListener('click', saveSettings);
         document.getElementById('exportBtn')?.addEventListener('click', exportSettings);
         document.getElementById('importBtn')?.addEventListener('click', importSettings);
         document.getElementById('resetBtn')?.addEventListener('click', resetSettings);
-        
-        // Add event listeners for import functionality
+
         document.getElementById('importFromJson')?.addEventListener('change', importFromJson);
         document.getElementById('importFromCSV')?.addEventListener('change', importFromCSV);
-        
-        // Add category order event listeners
+
         document.getElementById('category-order')?.addEventListener('click', handleCategoryOrderEvents);
-        
-        // Add search engine related event listeners
+
         const searchEnginesContainer = document.getElementById('search-engines');
         if (searchEnginesContainer) {
-            // Handle click events
             searchEnginesContainer.addEventListener('click', handleSearchEngineEvents);
-            // Handle input events
             searchEnginesContainer.addEventListener('input', handleSearchEngineEvents);
         }
-        
-        // If there's a first category, scroll to it
+
         if (firstCategory) {
             setTimeout(() => {
                 document.getElementById(firstCategory)?.scrollIntoView({ behavior: 'smooth' });
             }, 100);
         }
-        
+
     } catch (error) {
         console.error('Initialization failed:', error);
         showMessage('Failed to initialize options page', 'error');

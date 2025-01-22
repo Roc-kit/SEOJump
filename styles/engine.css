@@ -1,25 +1,4 @@
 
-.category-order-item {
-    display: flex;
-    align-items: center;
-    border-radius: 4px;
-    margin: 2px 0;
-    background: var(--background-color);
-    transition: background-color 0.2s;
-}
-
-
-.category-order-item .category-name {
-    flex: 1;
-    margin-left: 5px;
-    padding: 8px;
-    border: 1px solid var(--border-color);
-    border-radius: 4px;
-    background: white;
-    max-width: 200px;
-}
-
-
 .category-section {
     background: white;
     border-radius: 8px;
@@ -38,7 +17,7 @@
 
 
 .category-header input {
-    padding: 8px;
+    padding: 8px 10px;
     border: 1px solid var(--border-color);
     border-radius: 4px;
 }
@@ -82,7 +61,7 @@
 
 
 .engine-item input {
-    padding: 8px;
+    padding: 8px 10px;
     border: 1px solid var(--border-color);
     border-radius: 4px;
 }
@@ -136,7 +115,7 @@
 
 
 .slider:before {
-    position: absolute; 
+    position: absolute;
     content: "";
     height: 12px;
     width: 12px;

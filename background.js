@@ -1,10 +1,24 @@
 // Background script for the extension, responsible for handling core functionality
 
+// Global state to track menu creation
+let menuCreationInProgress = false;
+
 // Update context menus function
 async function updateContextMenus(settings) {
+    // 如果已经在创建菜单，则跳过
+    if (menuCreationInProgress) {
+        console.warn('Menu creation already in progress, skipping...');
+        return;
+    }
+
     try {
+        menuCreationInProgress = true;
+
         // Remove all existing context menu items first
         await chrome.contextMenus.removeAll();
+        
+        // 添加一个短暂的延迟，确保菜单项被完全清理
+        await new Promise(resolve => setTimeout(resolve, 100));
 
         // Validate settings
         if (!settings || !Array.isArray(settings)) {
@@ -19,28 +33,65 @@ async function updateContextMenus(settings) {
                 continue;
             }
 
-            // Create main menu item for category
-            const categoryId = `category_${categoryIndex}`;
-            await chrome.contextMenus.create({
-                id: categoryId,
-                title: category.name,
-                contexts: ['selection']  // Only show when text is selected
-            });
+            try {
+                // Create main menu item for category
+                const categoryId = `category_${categoryIndex}`;
+                await chrome.contextMenus.create({
+                    id: categoryId,
+                    title: category.name || 'Unnamed Category',
+                    contexts: ['selection']  // Only show when text is selected
+                });
 
-            // Create sub-menu items for each enabled search engine
-            for (const [engineIndex, engine] of category.engines.entries()) {
-                if (!engine.disable) {
-                    await chrome.contextMenus.create({
-                        id: `category_${categoryIndex}_engine_${engineIndex}`,
-                        parentId: categoryId,
-                        title: engine.name,
-                        contexts: ['selection']
-                    });
+                // Create sub-menu items for each enabled search engine
+                for (const [engineIndex, engine] of category.engines.entries()) {
+                    if (!engine.disable) {
+                        try {
+                            await chrome.contextMenus.create({
+                                id: `category_${categoryIndex}_engine_${engineIndex}`,
+                                parentId: categoryId,
+                                title: engine.name || 'Unnamed Engine',
+                                contexts: ['selection']
+                            });
+                        } catch (engineError) {
+                            console.warn(`Failed to create engine menu item: ${engineError.message}`);
+                            continue;
+                        }
+                    }
                 }
+            } catch (categoryError) {
+                console.warn(`Failed to create category menu item: ${categoryError.message}`);
+                continue;
             }
         }
     } catch (error) {
         console.error('Error updating context menus:', error);
+        // 如果发生错误，尝试再次清理所有菜单项
+        try {
+            await chrome.contextMenus.removeAll();
+        } catch (cleanupError) {
+            console.error('Failed to cleanup context menus:', cleanupError);
+        }
+    } finally {
+        menuCreationInProgress = false;
+    }
+}
+
+// Initialize the extension
+async function initialize() {
+    try {
+        // Get initial settings
+        const data = await chrome.storage.local.get('searchEngines');
+        if (data.searchEngines) {
+            await updateContextMenus(data.searchEngines);
+        } else {
+            // Load default settings if none exist
+            const response = await fetch(chrome.runtime.getURL('config/default-engines.json'));
+            const defaultEngines = await response.json();
+            await chrome.storage.local.set({ searchEngines: defaultEngines });
+            await updateContextMenus(defaultEngines);
+        }
+    } catch (error) {
+        console.error('Failed to initialize extension:', error);
     }
 }
 
@@ -217,8 +268,6 @@ async function handleSearch(url, text, context = {}, inBackground = false) {
     }
 }
 
-
-
 // API testing state
 let availableApi = null;
 let apiTestPromise = null;
@@ -330,7 +379,6 @@ function blobToBase64(blob) {
     });
 }
 
-
 // Event listener triggered when the extension is installed or updated
 chrome.runtime.onInstalled.addListener(async (details) => {
     // Clean up old logs
@@ -361,16 +409,23 @@ chrome.runtime.onInstalled.addListener(async (details) => {
 });
 
 // Listen for storage changes
-chrome.storage.onChanged.addListener(async (changes, namespace) => {
+chrome.storage.onChanged.addListener((changes, namespace) => {
     if (namespace === 'local' && changes.searchEngines) {
         try {
-            await updateContextMenus(changes.searchEngines.newValue);
+            updateContextMenus(changes.searchEngines.newValue);
         } catch (error) {
             console.error('Error updating context menus:', error);
         }
     }
 });
 
+// Listen for settings changes
+chrome.storage.onChanged.addListener((changes, namespace) => {
+    if (namespace === 'local' && changes.searchEngines) {
+        // Update context menus when settings change
+        updateContextMenus(changes.searchEngines.newValue);
+    }
+});
 
 // Handle context menu click event
 chrome.contextMenus.onClicked.addListener(async (info, tab) => {
@@ -433,7 +488,6 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
     }
 });
 
-
 // Listen for messages from content script
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     // Handle settings update message
@@ -469,17 +523,5 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     }
 });
 
-
-// Initialize context menus when extension starts
-chrome.storage.local.get(['searchEngines'], async function(result) {
-    if (result.searchEngines) {
-        try {
-            await updateContextMenus(result.searchEngines);
-        } catch (error) {
-            console.error('Error initializing context menus:', error);
-        }
-    }
-});
-
-// Initialize API testing
-testApiAvailability();
+// Initialize the extension
+initialize();

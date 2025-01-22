@@ -1247,6 +1247,26 @@ function enableAllowCopy() {
     });
 }
 
+// Listen for settings changes
+chrome.storage.onChanged.addListener((changes, namespace) => {
+    if (namespace === 'local' && changes.searchEngines) {
+        const newEngines = changes.searchEngines.newValue;
+        if (newEngines && Array.isArray(newEngines)) {
+            engines = newEngines;
+            // Remove existing toolbar if present
+            const existingToolbar = document.querySelector('.easy-switch-toolbar');
+            if (existingToolbar) {
+                existingToolbar.remove();
+            }
+            // Create new toolbar with updated engines
+            const selectedText = window.getSelection().toString().trim();
+            if (selectedText) {
+                createToolbar(engines);
+            }
+        }
+    }
+});
+
 // Handle page restoration from bfcache
 window.addEventListener('pageshow', function(event) {
     if (event.persisted) {
