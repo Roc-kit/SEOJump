@@ -82,6 +82,10 @@ Source files should generally stay below 500 lines. Split by responsibility rath
 3. Click **Load unpacked**.
 4. Select this repository directory.
 
+## Website
+
+The public URL-template directory is maintained separately at `Roc-kit/SEOJumpSite`. The extension and website have independent repositories, release cycles, and data. The website may keep its own snapshot of useful extension templates as seed content, but there is no runtime or build-time dependency between the two projects.
+
 ## Repository
 
 GitHub: `Roc-kit/SEOJump`
