@@ -158,12 +158,6 @@
       tools.addEventListener('input', handleToolsInput);
       tools.addEventListener('change', handleToolsChange);
       tools.addEventListener('focusout', flushTextEditOnBlur);
-      tools.addEventListener('dblclick', event => {
-        if (!event.target.classList.contains('engine-url')) return;
-        const item = event.target.closest('.engine-item');
-        const name = item?.querySelector('.engine-name')?.value || '';
-        app.showUrlEditModal(event.target, name);
-      });
 
       document.addEventListener('visibilitychange', () => {
         if (document.visibilityState === 'hidden' && app.state.hasUnsavedChanges) {

@@ -7,31 +7,12 @@
     <link rel="stylesheet" href="styles/variables.css">
     <link rel="stylesheet" href="styles/layout.css">
     <link rel="stylesheet" href="styles/header.css">
-    <link rel="stylesheet" href="styles/navigation.css">
     <link rel="stylesheet" href="styles/engine.css">
     <link rel="stylesheet" href="styles/components.css">
+    <link rel="stylesheet" href="styles/options.css">
 </head>
 <body>
     <div class="container">
-        <div class="nav-sidebar-container">
-            <div class="nav-sidebar">
-                <div class="nav-header">
-                    <img src="icons/icon48.png" alt="SEOJump" class="nav-icon">
-                    <h1><a href="#" class="nav-title">SEOJump</a></h1>
-                </div>
-                <ul class="nav-menu"></ul>
-                <div class="button-group">
-                    <div class="save-status" id="saveStatus" data-state="saved">
-                        <span class="save-status-dot"></span>
-                        <span class="save-status-text">Saved</span>
-                    </div>
-                    <button id="exportBtn" data-i18n="export">Export</button>
-                    <button id="importBtn" data-i18n="import">Import</button>
-                    <button id="resetBtn" data-i18n="reset">Reset</button>
-                </div>
-            </div>
-        </div>
-
         <main class="main-content">
             <div class="content">
                 <header class="header-section">
@@ -41,6 +22,10 @@
                             <a href="https://github.com/Roc-kit/SEOJump" target="_blank" class="header-title">SEOJump</a>
                         </div>
                         <div class="header-right">
+                            <div class="save-status" id="saveStatus" data-state="saved">
+                                <span class="save-status-dot"></span>
+                                <span class="save-status-text">Saved</span>
+                            </div>
                             <a href="https://github.com/Roc-kit/SEOJump" target="_blank" class="social-link" title="GitHub">
                                 <img src="image/github.svg" alt="GitHub" class="social-icon">
                             </a>
@@ -78,44 +63,6 @@
                     <p class="info-text" data-i18n="triggerHint">The right-click search menu remains available in every mode.</p>
                 </section>
 
-                <section id="placeholders" class="toolbar">
-                    <h2>
-                        <svg class="section-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="12" cy="12" r="10"></circle>
-                            <line x1="12" y1="16" x2="12" y2="12"></line>
-                            <line x1="12" y1="8" x2="12.01" y2="8"></line>
-                        </svg>
-                        <span data-i18n="placeholderInfo">Placeholder Info</span>
-                    </h2>
-                    <table class="placeholder-info">
-                        <tr>
-                            <th data-i18n="placeholder">Placeholder</th>
-                            <th data-i18n="description">Description</th>
-                            <th data-i18n="example">Example</th>
-                        </tr>
-                        <tr>
-                            <td>%selectedText%</td>
-                            <td data-i18n="selectedTextDescription">Selected text or search keyword</td>
-                            <td>https://www.google.com/search?q=<span class="highlight">%selectedText%</span></td>
-                        </tr>
-                        <tr>
-                            <td>%currentUrl%</td>
-                            <td data-i18n="currentUrlDescription">Current page URL</td>
-                            <td>https://web.archive.org/web/*/<span class="highlight">%currentUrl%</span></td>
-                        </tr>
-                        <tr>
-                            <td>%currentDomain%</td>
-                            <td data-i18n="currentDomainDescription">Current page domain</td>
-                            <td>https://www.similarweb.com/website/<span class="highlight">%currentDomain%</span>/competitors/</td>
-                        </tr>
-                    </table>
-                    <p class="info-text">
-                        <span data-i18n="placeholderHelpPrefix">Add custom tools with these placeholders. Detailed documentation is available</span>
-                        <a href="https://searchengines.cc/" target="_blank" data-i18n="here">here</a>.
-                    </p>
-                    <p class="advanced-warning" data-i18n="advancedWarning">Advanced Actions are experimental. Target-site DOM changes can break input or submit selectors.</p>
-                </section>
-
                 <section id="search-engines" class="toolbar">
                     <h2>
                         <svg class="section-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -126,6 +73,54 @@
                     </h2>
                     <div id="categories-container"></div>
                 </section>
+
+                <details id="placeholders" class="toolbar placeholder-details">
+                    <summary class="placeholder-summary">
+                        <svg class="section-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="16" x2="12" y2="12"></line>
+                            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                        </svg>
+                        <span data-i18n="placeholderInfo">Placeholder Info</span>
+                    </summary>
+                    <div class="placeholder-content">
+                        <table class="placeholder-info">
+                            <tr>
+                                <th data-i18n="placeholder">Placeholder</th>
+                                <th data-i18n="description">Description</th>
+                                <th data-i18n="example">Example</th>
+                            </tr>
+                            <tr>
+                                <td>%selectedText%</td>
+                                <td data-i18n="selectedTextDescription">Selected text or search keyword</td>
+                                <td>https://www.google.com/search?q=<span class="highlight">%selectedText%</span></td>
+                            </tr>
+                            <tr>
+                                <td>%currentUrl%</td>
+                                <td data-i18n="currentUrlDescription">Current page URL</td>
+                                <td>https://web.archive.org/web/*/<span class="highlight">%currentUrl%</span></td>
+                            </tr>
+                            <tr>
+                                <td>%currentDomain%</td>
+                                <td data-i18n="currentDomainDescription">Current page domain</td>
+                                <td>https://www.similarweb.com/website/<span class="highlight">%currentDomain%</span>/competitors/</td>
+                            </tr>
+                        </table>
+                        <p class="info-text">
+                            <span data-i18n="placeholderHelpPrefix">Add custom tools with these placeholders. Detailed documentation is available</span>
+                            <a href="https://searchengines.cc/" target="_blank" data-i18n="here">here</a>.
+                        </p>
+                        <p class="advanced-warning" data-i18n="advancedWarning">Advanced Actions are experimental. Target-site DOM changes can break input or submit selectors.</p>
+                    </div>
+                </details>
+
+                <footer class="page-actions">
+                    <div class="page-actions-primary">
+                        <button id="exportBtn" data-i18n="export">Export</button>
+                        <button id="importBtn" data-i18n="import">Import</button>
+                    </div>
+                    <button id="resetBtn" class="reset-action" data-i18n="reset">Reset</button>
+                </footer>
             </div>
         </main>
     </div>

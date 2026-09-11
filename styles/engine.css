@@ -28,7 +28,6 @@
     color: var(--text-color);
 }
 
-.tools-panel-count,
 .category-tool-count {
     color: #7c879b;
     font-size: 12px;
@@ -81,8 +80,7 @@
     justify-self: center;
 }
 
-.add-category,
-.add-engine {
+.add-category {
     width: 100%;
     margin-top: 8px;
     padding: 8px 10px;
@@ -93,7 +91,26 @@
     cursor: pointer;
 }
 
-.add-category:hover,
+.add-category:hover {
+    background: var(--primary-soft-color);
+    border-color: var(--primary-color);
+}
+
+.add-engine {
+    display: block;
+    width: 30px;
+    height: 30px;
+    margin: 8px 0 0 auto;
+    padding: 0;
+    border: 1px dashed var(--border-color);
+    border-radius: 6px;
+    background: transparent;
+    color: var(--primary-color);
+    cursor: pointer;
+    font-size: 20px;
+    line-height: 28px;
+}
+
 .add-engine:hover {
     background: var(--primary-soft-color);
     border-color: var(--primary-color);

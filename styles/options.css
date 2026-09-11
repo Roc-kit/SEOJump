@@ -1,0 +1,107 @@
+.toolbar {
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.toolbar h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+}
+
+.placeholder-details {
+    padding: 0;
+    overflow: hidden;
+}
+
+.placeholder-summary {
+    display: flex;
+    align-items: center;
+    padding: 18px 20px;
+    color: #333;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    list-style: none;
+    user-select: none;
+}
+
+.placeholder-summary::-webkit-details-marker {
+    display: none;
+}
+
+.placeholder-summary::after {
+    content: '›';
+    margin-left: auto;
+    color: #7c879b;
+    font-size: 24px;
+    font-weight: 400;
+    transform: rotate(90deg);
+    transition: transform 0.15s ease;
+}
+
+.placeholder-details[open] .placeholder-summary::after {
+    transform: rotate(-90deg);
+}
+
+.placeholder-content {
+    padding: 0 20px 20px;
+    border-top: 1px solid var(--border-color);
+}
+
+.page-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 4px 0 8px;
+}
+
+.page-actions-primary {
+    display: flex;
+    gap: 10px;
+}
+
+.page-actions button {
+    min-width: 96px;
+    padding: 8px 14px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background: white;
+    color: var(--text-color);
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.page-actions button:hover {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+    background: var(--primary-soft-color);
+}
+
+.page-actions .reset-action {
+    min-width: auto;
+    border-color: transparent;
+    background: transparent;
+    color: #7c879b;
+}
+
+.page-actions .reset-action:hover {
+    border-color: transparent;
+    background: transparent;
+    color: #b42318;
+}
+
+@media (max-width: 620px) {
+    .page-actions {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .page-actions-primary {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+    }
+}

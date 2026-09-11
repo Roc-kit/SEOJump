@@ -112,20 +112,7 @@
     background: var(--hover-color);
 }
 
-.button-group {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    padding: 20px;
-    width: var(--sidebar-width);
-    box-sizing: border-box;
-    position: fixed;
-    bottom: 0;
-    border-top: 1px solid var(--border-color);
-}
-
 .save-status {
-    grid-column: 1 / -1;
     display: flex;
     align-items: center;
     gap: 8px;
@@ -151,25 +138,6 @@
 
 .save-status[data-state="error"] .save-status-dot {
     background: #d92d20;
-}
-
-.button-group button {
-    padding: 8px;
-    border: 1px solid var(--border-color);
-    border-radius: 4px;
-    background: white;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-.button-group button:hover {
-    background: var(--primary-color);
-    color: white;
-    border-color: var(--primary-color);
-}
-
-.button-group #resetBtn {
-    grid-column: 1 / -1;
 }
 
 .message {

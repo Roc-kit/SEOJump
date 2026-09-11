@@ -33,24 +33,6 @@
     }
   };
 
-  app.renderCategoryMenu = function renderCategoryMenu() {
-    const menu = document.querySelector('.nav-menu');
-    if (!menu) return;
-    menu.innerHTML = '';
-
-    ['general-settings', 'placeholders', 'search-engines'].forEach(id => {
-      const section = document.getElementById(id);
-      const heading = section?.querySelector('h2');
-      if (!section || !heading) return;
-      const item = document.createElement('li');
-      const link = document.createElement('a');
-      link.href = `#${id}`;
-      link.textContent = heading.textContent.trim();
-      item.appendChild(link);
-      menu.appendChild(item);
-    });
-  };
-
   app.renderSearchEngines = function renderSearchEngines() {
     const container = document.getElementById('categories-container');
     if (!container) return;
@@ -92,7 +74,6 @@
         <aside class="category-panel">
           <div class="tools-panel-title">
             <span>${SEOJumpI18n.t('categories')}</span>
-            <span class="tools-panel-count">${state.engines.length}</span>
           </div>
           <div class="category-list">${categoryItems}</div>
           <button type="button" class="add-category">+ ${SEOJumpI18n.t('addCategory')}</button>
@@ -109,7 +90,7 @@
             <button type="button" class="delete-category" ${state.engines.length <= 1 ? 'disabled' : ''}>${deleteIcon}</button>
           </div>
           <div class="engines-list">${engineItems}</div>
-          <button type="button" class="add-engine">+ ${SEOJumpI18n.t('addTool')}</button>
+          <button type="button" class="add-engine" title="${SEOJumpI18n.t('addTool')}" aria-label="${SEOJumpI18n.t('addTool')}">+</button>
         </div>
       </div>
     `;
@@ -156,7 +137,6 @@
 
   app.renderAll = function renderAll() {
     app.renderSearchEngines();
-    app.renderCategoryMenu();
     app.initSortable();
     SEOJumpI18n.apply();
     app.setSaveStatus(state.saveStatus);
