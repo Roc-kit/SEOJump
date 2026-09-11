@@ -202,6 +202,11 @@
 .engine-url {
     width: 100%;
     min-width: 0;
+    color: #667085;
+}
+
+.engine-url {
+    color: #7a8494;
 }
 
 .edit-engine-url {
