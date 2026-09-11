@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Easy Switch Search Options</title>
+    <title>SEOJump Options</title>
     <link rel="stylesheet" href="styles/variables.css">
     <link rel="stylesheet" href="styles/layout.css">
     <link rel="stylesheet" href="styles/header.css">
@@ -15,129 +15,145 @@
     <div class="container">
         <div class="nav-sidebar-container">
             <div class="nav-sidebar">
-
                 <div class="nav-header">
-                    <img src="icons/icon48.png" alt="Icon" class="nav-icon">
-                    <h1><a href="#" class="nav-title">Easy Switch Search</a></h1>
+                    <img src="icons/icon48.png" alt="SEOJump" class="nav-icon">
+                    <h1><a href="#" class="nav-title">SEOJump</a></h1>
                 </div>
-
-                <ul class="nav-menu">
-                </ul>
+                <ul class="nav-menu"></ul>
                 <div class="button-group">
-                    <button id="saveBtn">Save</button>
-                    <button id="exportBtn">Export</button>
-                    <button id="importBtn">Import</button>
-                    <button id="resetBtn">Reset</button>
+                    <button id="saveBtn" data-i18n="save">Save</button>
+                    <button id="exportBtn" data-i18n="export">Export</button>
+                    <button id="importBtn" data-i18n="import">Import</button>
+                    <button id="resetBtn" data-i18n="reset">Reset</button>
                 </div>
             </div>
-
         </div>
 
-        <div class="main-content">
+        <main class="main-content">
             <div class="content">
-                <div id="top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})"></div>
-
-                <!-- Header Section -->
-                <div class="header-section">
+                <header class="header-section">
                     <div class="header-main">
                         <div class="header-left">
-                            <img src="icons/icon48.png" alt="Logo" class="header-logo">
-                            <a href="https://github.com/Roc-kit/EasySwitchSearch" target="_blank" class="header-title">
-                                Easy Switch Search
-                            </a>
+                            <img src="icons/icon48.png" alt="SEOJump" class="header-logo">
+                            <a href="https://github.com/Roc-kit/SEOJump" target="_blank" class="header-title">SEOJump</a>
                         </div>
                         <div class="header-right">
-                            <a href="https://twitter.com/yourusername" target="_blank" class="social-link">
-                                <img src="image/twitter.svg" alt="Twitter" class="social-icon">
-                            </a>
-                            <a href="https://github.com/Roc-kit/EasySwitchSearch" target="_blank" class="social-link">
+                            <a href="https://github.com/Roc-kit/SEOJump" target="_blank" class="social-link" title="GitHub">
                                 <img src="image/github.svg" alt="GitHub" class="social-icon">
                             </a>
                         </div>
                     </div>
+                    <p class="header-tagline" data-i18n="tagline">Keyword, page and domain shortcuts for SEO.</p>
                     <div class="header-divider"></div>
-                    <div class="header-support">
-                        <span>Like this extension? A coffee would make my day! 😊</span>
-                        <a href="https://www.buymeacoffee.com/yourusername" target="_blank" class="coffee-link">
-                            Buy me a coffee ☕ ➡
-                        </a>
-                    </div>
-                    <div class="header-divider"></div>
-                </div>
+                </header>
 
-                <div id="placeholders" class="toolbar">
+                <section id="general-settings" class="toolbar">
+                    <h2>
+                        <svg class="section-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="3"></circle>
+                            <path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-2.83 2.83-.06-.06A1.7 1.7 0 0 0 15 19.4a1.7 1.7 0 0 0-1 .6 1.7 1.7 0 0 0-.4 1.1V21h-4v-.1A1.7 1.7 0 0 0 8.6 19.4a1.7 1.7 0 0 0-1.88.34l-.06.06-2.83-2.83.06-.06A1.7 1.7 0 0 0 4.2 15a1.7 1.7 0 0 0-.6-1 1.7 1.7 0 0 0-1.1-.4H2.4v-4h.1A1.7 1.7 0 0 0 4.2 8.6a1.7 1.7 0 0 0-.34-1.88l-.06-.06 2.83-2.83.06.06A1.7 1.7 0 0 0 8.6 4.2a1.7 1.7 0 0 0 1-.6A1.7 1.7 0 0 0 10 2.5V2.4h4v.1a1.7 1.7 0 0 0 1 1.7 1.7 1.7 0 0 0 1.88-.34l.06-.06 2.83 2.83-.06.06A1.7 1.7 0 0 0 19.4 8.6a1.7 1.7 0 0 0 .6 1c.3.25.7.4 1.1.4h.1v4h-.1a1.7 1.7 0 0 0-1.7 1z"></path>
+                        </svg>
+                        <span data-i18n="generalSettings">General Settings</span>
+                    </h2>
+                    <div class="settings-grid">
+                        <label class="setting-row">
+                            <span data-i18n="interfaceLanguage">Interface language</span>
+                            <select id="languageSelect">
+                                <option value="en" data-i18n="english">English</option>
+                                <option value="zh-CN" data-i18n="chinese">简体中文</option>
+                            </select>
+                        </label>
+                        <label class="setting-row">
+                            <span data-i18n="selectionToolbar">Selection toolbar</span>
+                            <select id="selectionTriggerSelect">
+                                <option value="modifier" data-i18n="triggerModifier">Hold Ctrl while selecting text</option>
+                                <option value="always" data-i18n="triggerAlways">Always show after selecting text</option>
+                                <option value="off" data-i18n="triggerOff">Disable selection toolbar</option>
+                            </select>
+                        </label>
+                    </div>
+                    <p class="info-text" data-i18n="triggerHint">The right-click search menu remains available in every mode.</p>
+                </section>
+
+                <section id="placeholders" class="toolbar">
                     <h2>
                         <svg class="section-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <circle cx="12" cy="12" r="10"></circle>
                             <line x1="12" y1="16" x2="12" y2="12"></line>
                             <line x1="12" y1="8" x2="12.01" y2="8"></line>
                         </svg>
-                        Placeholder Info
+                        <span data-i18n="placeholderInfo">Placeholder Info</span>
                     </h2>
                     <table class="placeholder-info">
                         <tr>
-                            <th>Placeholder</th>
-                            <th>Description</th>
-                            <th>Example</th>
+                            <th data-i18n="placeholder">Placeholder</th>
+                            <th data-i18n="description">Description</th>
+                            <th data-i18n="example">Example</th>
                         </tr>
                         <tr>
                             <td>%selectedText%</td>
-                            <td>Selected text or search keyword</td>
+                            <td data-i18n="selectedTextDescription">Selected text or search keyword</td>
                             <td>https://www.google.com/search?q=<span class="highlight">%selectedText%</span></td>
                         </tr>
                         <tr>
                             <td>%currentUrl%</td>
-                            <td>Current page URL</td>
+                            <td data-i18n="currentUrlDescription">Current page URL</td>
                             <td>https://web.archive.org/web/*/<span class="highlight">%currentUrl%</span></td>
                         </tr>
                         <tr>
                             <td>%currentDomain%</td>
-                            <td>Current page domain</td>
+                            <td data-i18n="currentDomainDescription">Current page domain</td>
                             <td>https://www.similarweb.com/website/<span class="highlight">%currentDomain%</span>/competitors/</td>
                         </tr>
                     </table>
                     <p class="info-text">
-                        Add custom search engines to the list. For detailed instructions, please check the documentation <a href="http://searchengines.cc/" target="_blank">here.</a>
+                        <span data-i18n="placeholderHelpPrefix">Add custom tools with these placeholders. Detailed documentation is available</span>
+                        <a href="https://searchengines.cc/" target="_blank" data-i18n="here">here</a>.
                     </p>
-                </div>
+                    <p class="advanced-warning" data-i18n="advancedWarning">Advanced Actions are experimental. Target-site DOM changes can break input or submit selectors.</p>
+                </section>
 
-                <div id="search-engines" class="toolbar">
+                <section id="search-engines" class="toolbar">
                     <h2>
                         <svg class="section-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <circle cx="11" cy="11" r="8"></circle>
                             <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                         </svg>
-                        Search Engines
+                        <span data-i18n="searchTools">Search Tools</span>
                     </h2>
-                    <div id="categories-container">
-                        <!-- Categories will be dynamically added here -->
-                    </div>
-                </div>
+                    <div id="categories-container"></div>
+                </section>
             </div>
-        </div>
+        </main>
     </div>
 
     <div class="modal-overlay" id="urlEditModal">
         <div class="modal">
-            <div class="modal-header">
-                <h3 class="modal-title">Edit Search URL</h3>
-            </div>
+            <div class="modal-header"><h3 class="modal-title">Edit URL</h3></div>
             <div class="modal-body">
-                    <textarea class="modal-url-input" placeholder="Search URL with %selectedText%"></textarea>
-                    <div id="modal-placeholders"></div>
+                <textarea class="modal-url-input" data-i18n-placeholder="toolUrlPlaceholder"></textarea>
+                <div class="modal-placeholder-hint">
+                    <code>%selectedText%</code>
+                    <code>%currentUrl%</code>
+                    <code>%currentDomain%</code>
                 </div>
+            </div>
             <div class="modal-footer">
-                <button class="modal-btn modal-btn-secondary" id="modalCancelBtn">Cancel</button>
-                <button class="modal-btn modal-btn-primary" id="modalSaveBtn">Save</button>
+                <button class="modal-btn modal-btn-secondary" id="modalCancelBtn" data-i18n="cancel">Cancel</button>
+                <button class="modal-btn modal-btn-primary" id="modalSaveBtn" data-i18n="save">Save</button>
             </div>
         </div>
     </div>
 
-    <!-- Hidden file inputs for import -->
-    <input type="file" id="importFromJson" style="display: none;" accept=".json">
-    <input type="file" id="importFromCSV" style="display: none;" accept=".csv">
+    <input type="file" id="importFromJson" hidden accept=".json">
+    <input type="file" id="importFromCSV" hidden accept=".csv">
 
-    <script src="options.js"></script>
     <script src="utils/Sortable.min.js"></script>
+    <script src="src/shared/settings.js"></script>
+    <script src="src/shared/i18n.js"></script>
+    <script src="src/options/state.js"></script>
+    <script src="src/options/render.js"></script>
+    <script src="src/options/io.js"></script>
+    <script src="options.js"></script>
 </body>
 </html>

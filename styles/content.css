@@ -1,5 +1,5 @@
-.easy-switch-toolbar,
-.easy-switch-toolbar *,
+.seojump-toolbar,
+.seojump-toolbar *,
 .search-category-container,
 .search-category-container *,
 .search-engines-dropdown,
@@ -23,7 +23,7 @@
     -ms-user-select: none !important;
 }
 
-.easy-switch-toolbar {
+.seojump-toolbar {
     position: fixed !important;
     top: 10px !important;
     left: 50% !important;
@@ -43,8 +43,7 @@
     isolation: isolate !important;
 }
 
-
-.easy-switch-toolbar.visible {
+.seojump-toolbar.visible {
     display: flex !important;
     flex-direction: row !important;
     gap: 4px !important;
@@ -54,7 +53,6 @@
     flex-wrap: nowrap !important;
 }
 
-
 .search-category-container {
     position: relative !important;
     display: inline-flex !important;
@@ -62,7 +60,6 @@
     height: 32px !important;
     background: none !important;
 }
-
 
 .search-category-button {
     display: inline-flex !important;
@@ -82,11 +79,9 @@
     max-width: none !important;
 }
 
-
 .search-category-button:hover {
     background-color: #f0f0f0 !important;
 }
-
 
 .search-category-button span {
     white-space: nowrap !important;
@@ -94,7 +89,6 @@
     text-overflow: clip !important;
     display: block !important;
 }
-
 
 .search-engines-dropdown {
     display: none !important;
@@ -113,7 +107,6 @@
     flex-direction: column !important;
 }
 
-
 .search-engines-dropdown::before {
     content: '' !important;
     position: absolute !important;
@@ -124,11 +117,9 @@
     background: transparent !important;
 }
 
-
 .search-category-container:hover .search-engines-dropdown {
     display: block !important;
 }
-
 
 .search-engine-button {
     display: flex !important;
@@ -151,18 +142,15 @@
     transition: background-color 0.2s ease !important;
 }
 
-
 .search-engine-button:hover,
 .search-engine-button:focus {
     background-color: #f0f0f0 !important;
     outline: none !important;
 }
 
-
 .search-engine-button:active {
     background-color: #e0e0e0 !important;
 }
-
 
 .search-engine-icon {
     width: 16px !important;
@@ -179,7 +167,6 @@
     min-height: 16px !important;
 }
 
-
 .search-engine-name {
     font-size: 13px !important;
     color: #333 !important;
@@ -193,7 +180,6 @@
     text-overflow: clip !important;
 }
 
-
 .search-engines-dropdown .engine-item {
     display: flex !important;
     align-items: center !important;
@@ -205,21 +191,17 @@
     transition: background-color 0.2s !important;
 }
 
-
 .search-engines-dropdown .engine-item:hover {
     background-color: #f0f0f0 !important;
 }
-
 
 .search-engines-dropdown .engine-item:first-child {
     margin-top: 0 !important;
 }
 
-
 .search-engines-dropdown .engine-item:last-child {
     margin-bottom: 0 !important;
 }
-
 
 .settings-button {
     display: flex !important;
@@ -236,12 +218,10 @@
     margin-left: 4px !important;
 }
 
-
 .settings-button:hover {
     background-color: #f0f0f0 !important;
     color: #333 !important;
 }
-
 
 .settings-button svg {
     width: 16px !important;

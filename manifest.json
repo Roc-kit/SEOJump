@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Easy Switch Search",
+  "name": "SEOJump",
   "version": "1.0",
-  "description": "Quickly switch between search engines",
+  "description": "Jump selected text, the current page, or domain to SEO and search tools.",
   "permissions": [
     "storage",
     "contextMenus",
@@ -11,23 +11,31 @@
   "host_permissions": [
     "*://*/*"
   ],
-  "web_accessible_resources": [{
-    "resources": [
-      "config/*",
-      "icons/*",
-      "image/*"
-    ],
-    "matches": ["*://*/*"]
-  }],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "config/*",
+        "icons/*",
+        "image/*"
+      ],
+      "matches": ["*://*/*"]
+    }
+  ],
   "content_scripts": [
     {
       "matches": ["*://*/*"],
       "css": ["styles/content.css"],
-      "js": ["content.js"]
+      "js": [
+        "src/shared/settings.js",
+        "src/content/core.js",
+        "src/content/toolbar.js",
+        "src/content/advanced-actions.js",
+        "src/content/main.js"
+      ]
     }
   ],
   "action": {
-    "default_title": "Easy Switch Search",
+    "default_title": "SEOJump",
     "default_popup": "popup.html",
     "default_icon": {
       "16": "icons/icon16.png",
@@ -40,15 +48,7 @@
   },
   "options_ui": {
     "page": "options.html",
-    "open_in_tab": true,
-    "css": [
-      "styles/variables.css",
-      "styles/layout.css",
-      "styles/header.css",
-      "styles/navigation.css",
-      "styles/engine.css",
-      "styles/components.css"
-    ]
+    "open_in_tab": true
   },
   "icons": {
     "16": "icons/icon16.png",

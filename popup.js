@@ -1,4 +1,6 @@
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+    await SEOJumpI18n.initialize();
+
     document.getElementById('marketLink').addEventListener('click', () => {
         chrome.tabs.create({ url: 'https://SearchEngines.cc' });
         window.close();
@@ -6,7 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.getElementById('allowCopyBtn').addEventListener('click', async () => {
         const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-        chrome.tabs.sendMessage(tab.id, { type: 'enableCopy' });
+        if (tab?.id) chrome.tabs.sendMessage(tab.id, { type: 'enableCopy' });
         window.close();
     });
 
