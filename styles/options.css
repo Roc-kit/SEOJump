@@ -13,9 +13,9 @@
 
 #general-settings {
     width: 100%;
-    max-width: 800px;
     padding: 16px 20px;
     box-sizing: border-box;
+    margin-bottom: 0;
 }
 
 #general-settings h2 {
@@ -77,8 +77,8 @@
     align-items: center;
     justify-content: space-between;
     gap: 12px;
-    margin-top: 4px;
-    padding: 18px 0 8px;
+    margin-top: 14px;
+    padding: 16px 0 0;
     border-top: 1px solid var(--border-color);
 }
 
@@ -119,10 +119,6 @@
 }
 
 @media (max-width: 620px) {
-    #general-settings {
-        max-width: none;
-    }
-
     #general-settings .settings-grid {
         grid-template-columns: 1fr;
     }

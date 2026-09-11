@@ -35,34 +35,6 @@
                     <div class="header-divider"></div>
                 </header>
 
-                <section id="general-settings" class="toolbar">
-                    <h2>
-                        <svg class="section-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="12" cy="12" r="3"></circle>
-                            <path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-2.83 2.83-.06-.06A1.7 1.7 0 0 0 15 19.4a1.7 1.7 0 0 0-1 .6 1.7 1.7 0 0 0-.4 1.1V21h-4v-.1A1.7 1.7 0 0 0 8.6 19.4a1.7 1.7 0 0 0-1.88.34l-.06.06-2.83-2.83.06-.06A1.7 1.7 0 0 0 4.2 15a1.7 1.7 0 0 0-.6-1 1.7 1.7 0 0 0-1.1-.4H2.4v-4h.1A1.7 1.7 0 0 0 4.2 8.6a1.7 1.7 0 0 0-.34-1.88l-.06-.06 2.83-2.83.06.06A1.7 1.7 0 0 0 8.6 4.2a1.7 1.7 0 0 0 1-.6A1.7 1.7 0 0 0 10 2.5V2.4h4v.1a1.7 1.7 0 0 0 1 1.7 1.7 1.7 0 0 0 1.88-.34l.06-.06 2.83 2.83-.06.06A1.7 1.7 0 0 0 19.4 8.6a1.7 1.7 0 0 0 .6 1c.3.25.7.4 1.1.4h.1v4h-.1a1.7 1.7 0 0 0-1.7 1z"></path>
-                        </svg>
-                        <span data-i18n="generalSettings">General Settings</span>
-                    </h2>
-                    <div class="settings-grid">
-                        <label class="setting-row">
-                            <span data-i18n="interfaceLanguage">Interface language</span>
-                            <select id="languageSelect">
-                                <option value="en" data-i18n="english">English</option>
-                                <option value="zh-CN" data-i18n="chinese">简体中文</option>
-                            </select>
-                        </label>
-                        <label class="setting-row">
-                            <span data-i18n="selectionToolbar">Selection toolbar</span>
-                            <select id="selectionTriggerSelect">
-                                <option value="modifier" data-i18n="triggerModifier">Hold Ctrl while selecting text</option>
-                                <option value="always" data-i18n="triggerAlways">Always show after selecting text</option>
-                                <option value="off" data-i18n="triggerOff">Disable selection toolbar</option>
-                            </select>
-                        </label>
-                    </div>
-                    <p class="info-text" data-i18n="triggerHint">The right-click search menu remains available in every mode.</p>
-                </section>
-
                 <section id="search-engines" class="toolbar">
                     <h2>
                         <svg class="section-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -114,13 +86,40 @@
                     </div>
                 </details>
 
-                <footer class="page-actions">
-                    <div class="page-actions-primary">
-                        <button id="exportBtn" data-i18n="export">Export</button>
-                        <button id="importBtn" data-i18n="import">Import</button>
+                <section id="general-settings" class="toolbar">
+                    <h2>
+                        <svg class="section-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="3"></circle>
+                            <path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-2.83 2.83-.06-.06A1.7 1.7 0 0 0 15 19.4a1.7 1.7 0 0 0-1 .6 1.7 1.7 0 0 0-.4 1.1V21h-4v-.1A1.7 1.7 0 0 0 8.6 19.4a1.7 1.7 0 0 0-1.88.34l-.06.06-2.83-2.83.06-.06A1.7 1.7 0 0 0 4.2 15a1.7 1.7 0 0 0-.6-1 1.7 1.7 0 0 0-1.1-.4H2.4v-4h.1A1.7 1.7 0 0 0 4.2 8.6a1.7 1.7 0 0 0-.34-1.88l-.06-.06 2.83-2.83.06.06A1.7 1.7 0 0 0 8.6 4.2a1.7 1.7 0 0 0 1-.6A1.7 1.7 0 0 0 10 2.5V2.4h4v.1a1.7 1.7 0 0 0 1 1.7 1.7 1.7 0 0 0 1.88-.34l.06-.06 2.83 2.83-.06.06A1.7 1.7 0 0 0 19.4 8.6a1.7 1.7 0 0 0 .6 1c.3.25.7.4 1.1.4h.1v4h-.1a1.7 1.7 0 0 0-1.7 1z"></path>
+                        </svg>
+                        <span data-i18n="generalSettings">General Settings</span>
+                    </h2>
+                    <div class="settings-grid">
+                        <label class="setting-row">
+                            <span data-i18n="interfaceLanguage">Interface language</span>
+                            <select id="languageSelect">
+                                <option value="en" data-i18n="english">English</option>
+                                <option value="zh-CN" data-i18n="chinese">简体中文</option>
+                            </select>
+                        </label>
+                        <label class="setting-row">
+                            <span data-i18n="selectionToolbar">Selection toolbar</span>
+                            <select id="selectionTriggerSelect">
+                                <option value="modifier" data-i18n="triggerModifier">Hold Ctrl while selecting text</option>
+                                <option value="always" data-i18n="triggerAlways">Always show after selecting text</option>
+                                <option value="off" data-i18n="triggerOff">Disable selection toolbar</option>
+                            </select>
+                        </label>
                     </div>
-                    <button id="resetBtn" class="reset-action" data-i18n="reset">Reset</button>
-                </footer>
+                    <p class="info-text" data-i18n="triggerHint">The right-click search menu remains available in every mode.</p>
+                    <footer class="page-actions">
+                        <div class="page-actions-primary">
+                            <button id="exportBtn" data-i18n="export">Export</button>
+                            <button id="importBtn" data-i18n="import">Import</button>
+                        </div>
+                        <button id="resetBtn" class="reset-action" data-i18n="reset">Reset</button>
+                    </footer>
+                </section>
             </div>
         </main>
     </div>

@@ -3,7 +3,7 @@
     grid-template-columns: minmax(190px, 240px) minmax(0, 1fr);
     gap: 18px;
     align-items: stretch;
-    height: 520px;
+    height: 780px;
 }
 
 .category-panel,
@@ -132,14 +132,14 @@
     display: flex;
     align-items: center;
     gap: 10px;
-    padding-bottom: 14px;
-    margin-bottom: 10px;
+    padding-bottom: 10px;
+    margin-bottom: 6px;
     border-bottom: 1px solid var(--border-color);
 }
 
 .category-header input,
 .engine-item input {
-    padding: 8px 10px;
+    padding: 6px 8px;
     border: 1px solid var(--border-color);
     border-radius: 4px;
     box-sizing: border-box;
@@ -170,7 +170,7 @@
 .engines-list {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 2px;
     flex: 1;
     min-height: 0;
     overflow-y: auto;
@@ -182,8 +182,8 @@
     display: grid;
     grid-template-columns: 24px minmax(130px, 180px) minmax(220px, 1fr) 34px 40px 34px;
     align-items: center;
-    gap: 8px;
-    padding: 5px 6px;
+    gap: 6px;
+    padding: 2px 4px;
     border-radius: 6px;
     background: var(--background-color);
     transition: background-color 0.15s ease;
