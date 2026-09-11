@@ -46,8 +46,8 @@
 
 .add-category:hover,
 .add-engine:hover {
-    background: rgb(114, 89, 254);
-    border-color: rgb(114, 89, 254);
+    background: var(--primary-color);
+    border-color: var(--primary-color);
     color: white;
 }
 
@@ -128,9 +128,9 @@
 }
 
 .button-group button:hover {
-    background: rgb(114, 89, 254);
+    background: var(--primary-color);
     color: white;
-    border-color: rgb(114, 89, 254);
+    border-color: var(--primary-color);
 }
 
 .message {
@@ -183,6 +183,11 @@
     color: var(--text-color);
 }
 
+.setting-row select:focus {
+    border-color: var(--primary-color);
+    outline: 2px solid var(--primary-soft-color);
+}
+
 .placeholder-info {
     width: 100%;
     border-collapse: collapse;
@@ -202,7 +207,7 @@
 }
 
 .highlight {
-    color: rgb(114, 89, 254);
+    color: var(--primary-color);
     font-weight: 600;
 }
 
@@ -215,7 +220,7 @@
 }
 
 .info-text a {
-    color: rgb(114, 89, 254);
+    color: var(--primary-color);
     text-decoration: none;
     font-weight: 600;
 }
@@ -234,7 +239,7 @@
 .section-icon {
     vertical-align: middle;
     margin-right: 8px;
-    stroke: #666;
+    stroke: var(--primary-color);
 }
 
 h2 {
@@ -283,12 +288,12 @@ h2 {
 
 .format-option {
     margin: 10px 0;
-    background: rgb(114, 89, 254);
+    background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
     color: white;
     font-weight: bold;
 }
 
-.format-option:hover { background: rgb(100, 72, 253); }
+.format-option:hover { background: var(--primary-hover-color); }
 
 .format-note {
     font-size: 12px;
@@ -366,8 +371,8 @@ h2 {
 }
 
 .modal-url-input:focus {
-    border-color: var(--accent-color);
-    outline: none;
+    border-color: var(--primary-color);
+    outline: 2px solid var(--primary-soft-color);
 }
 
 .modal-placeholder-hint {
@@ -392,8 +397,8 @@ h2 {
 }
 
 .modal-btn-primary {
-    background: rgb(114, 89, 254);
-    border: 1px solid rgb(114, 89, 254);
+    background: var(--primary-color);
+    border: 1px solid var(--primary-color);
     color: white;
 }
 
@@ -403,5 +408,5 @@ h2 {
     color: var(--text-color);
 }
 
-.modal-btn-primary:hover { background: rgb(94, 69, 234); }
+.modal-btn-primary:hover { background: var(--primary-hover-color); }
 .modal-btn-secondary:hover { background: var(--hover-color); }

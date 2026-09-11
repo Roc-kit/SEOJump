@@ -22,7 +22,7 @@
 
 .nav-header .nav-title {
     text-decoration: none;
-    color: #333;
+    color: var(--primary-active-color);
 }
 
 
@@ -49,7 +49,7 @@
 
 .nav-menu > li > a:hover {
     background-color: var(--hover-color);
-    color: rgb(114, 89, 254);
+    color: var(--primary-color);
 }
 .category-menu-list {
     padding-left: 40px;
@@ -97,7 +97,7 @@
 }
 
 .category-menu-list .submenu-item:hover a {
-    color: rgb(114, 89, 254);
+    color: var(--primary-color);
 }
 
 

@@ -22,6 +22,12 @@
     border-radius: 4px;
 }
 
+.category-header input:focus,
+.engine-item input:focus {
+    border-color: var(--primary-color);
+    outline: 2px solid var(--primary-soft-color);
+}
+
 
 .category-header .category-name {
     max-width: 150px;
@@ -128,7 +134,7 @@
 
 
 input:checked + .slider {
-    background-color: rgb(114, 89,254);
+    background-color: var(--primary-color);
 }
 
 

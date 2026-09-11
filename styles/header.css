@@ -24,7 +24,7 @@
 .header-title {
     font-size: 24px;
     font-weight: 600;
-    color: var(--text-color);
+    color: var(--primary-active-color);
     text-decoration: none;
     transition: color 0.2s;
 }
@@ -73,7 +73,7 @@
 }
 
 .coffee-link {
-    color: rgb(114, 89,254);
+    color: var(--primary-color);
     text-decoration: none;
     font-weight: 500;
     transition: opacity 0.2s;

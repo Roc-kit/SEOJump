@@ -30,9 +30,9 @@
     transform: translateX(-50%) !important;
     display: none !important;
     background: white !important;
-    border: 1px solid #e0e0e0 !important;
+    border: 1px solid #d8e7f7 !important;
     border-radius: 8px !important;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+    box-shadow: 0 4px 14px rgba(5, 97, 243, 0.12) !important;
     z-index: 2147483647 !important;
     padding: 2px !important;
     font-size: 13px !important;
@@ -80,7 +80,12 @@
 }
 
 .search-category-button:hover {
-    background-color: #f0f0f0 !important;
+    background-color: #eef6ff !important;
+    color: #0561f3 !important;
+}
+
+.search-category-button:hover .search-engine-name {
+    color: #0561f3 !important;
 }
 
 .search-category-button span {
@@ -96,9 +101,9 @@
     top: 100% !important;
     left: 0 !important;
     background: white !important;
-    border: 1px solid #e0e0e0 !important;
+    border: 1px solid #d8e7f7 !important;
     border-radius: 8px !important;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+    box-shadow: 0 4px 14px rgba(5, 97, 243, 0.12) !important;
     padding: 4px !important;
     margin-top: -4px !important;
     z-index: 999999 !important;
@@ -144,12 +149,18 @@
 
 .search-engine-button:hover,
 .search-engine-button:focus {
-    background-color: #f0f0f0 !important;
+    background-color: #eef6ff !important;
+    color: #0561f3 !important;
     outline: none !important;
 }
 
+.search-engine-button:hover .search-engine-name,
+.search-engine-button:focus .search-engine-name {
+    color: #0561f3 !important;
+}
+
 .search-engine-button:active {
-    background-color: #e0e0e0 !important;
+    background-color: #dcecff !important;
 }
 
 .search-engine-icon {
@@ -192,7 +203,7 @@
 }
 
 .search-engines-dropdown .engine-item:hover {
-    background-color: #f0f0f0 !important;
+    background-color: #eef6ff !important;
 }
 
 .search-engines-dropdown .engine-item:first-child {
@@ -219,8 +230,8 @@
 }
 
 .settings-button:hover {
-    background-color: #f0f0f0 !important;
-    color: #333 !important;
+    background-color: #eef6ff !important;
+    color: #0561f3 !important;
 }
 
 .settings-button svg {
