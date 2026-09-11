@@ -3,7 +3,7 @@
   const state = app.state;
 
   const deleteIcon = `<img src="${chrome.runtime.getURL('image/delete.svg')}" class="delete-icon" alt="Delete">`;
-  const dragIcon = `<img src="${chrome.runtime.getURL('image/drag.svg')}" class="drag-handle" alt="Drag">`;
+  const dragIcon = `<img src="${chrome.runtime.getURL('image/drag.svg')}" class="drag-icon" alt="">`;
   let currentEditingUrlInput = null;
 
   app.showMessage = function showMessage(message, type = 'info') {
@@ -14,13 +14,24 @@
     setTimeout(() => element.remove(), 3000);
   };
 
-  function escapeAttribute(value) {
+  function escapeHtml(value) {
     return String(value ?? '')
       .replaceAll('&', '&amp;')
       .replaceAll('"', '&quot;')
+      .replaceAll("'", '&#39;')
       .replaceAll('<', '&lt;')
       .replaceAll('>', '&gt;');
   }
+
+  app.setSaveStatus = function setSaveStatus(status) {
+    const element = document.getElementById('saveStatus');
+    if (!element) return;
+    element.dataset.state = status;
+    const text = element.querySelector('.save-status-text');
+    if (text) {
+      text.textContent = SEOJumpI18n.t(status === 'error' ? 'saveError' : status);
+    }
+  };
 
   app.renderCategoryMenu = function renderCategoryMenu() {
     const menu = document.querySelector('.nav-menu');
@@ -38,106 +49,108 @@
       item.appendChild(link);
       menu.appendChild(item);
     });
-
-    const categories = document.createElement('div');
-    categories.className = 'category-menu-list';
-    state.engines.forEach((category, index) => {
-      const item = document.createElement('li');
-      item.className = 'submenu-item';
-      item.dataset.index = index;
-      const handle = document.createElement('span');
-      handle.className = 'drag-handle';
-      handle.innerHTML = dragIcon;
-      const link = document.createElement('a');
-      link.href = `#category-${index}`;
-      link.textContent = category.name;
-      item.append(handle, link);
-      categories.appendChild(item);
-    });
-    menu.appendChild(categories);
-
-    categories._sortable = new Sortable(categories, {
-      animation: 150,
-      handle: '.drag-handle',
-      draggable: '.submenu-item',
-      onEnd(event) {
-        const oldIndex = event.oldDraggableIndex ?? event.oldIndex;
-        const newIndex = event.newDraggableIndex ?? event.newIndex;
-        if (oldIndex === newIndex) return;
-        app.reorderCategory(oldIndex, newIndex);
-        app.renderAll();
-      }
-    });
   };
 
   app.renderSearchEngines = function renderSearchEngines() {
     const container = document.getElementById('categories-container');
     if (!container) return;
-    container.innerHTML = '';
+    if (!state.engines.length) {
+      container.innerHTML = '';
+      return;
+    }
 
-    state.engines.forEach((category, categoryIndex) => {
-      const section = document.createElement('div');
-      section.className = 'category-section';
-      section.id = `category-${categoryIndex}`;
-      section.dataset.index = categoryIndex;
-      section.innerHTML = `
-        <div class="category-header">
-          <input type="text" class="category-name" value="${escapeAttribute(category.name)}"
-            data-original="${escapeAttribute(category.name)}" data-i18n-placeholder="categoryName">
-          <label class="switch category-switch">
-            <input type="checkbox" class="category-toggle" ${category.disable ? '' : 'checked'}>
-            <span class="slider"></span>
-          </label>
-          <button class="delete-category" ${state.engines.length <= 1 ? 'disabled' : ''}>${deleteIcon}</button>
-        </div>
-        <div class="engines-list">
-          ${(category.engines || []).map((engine, engineIndex) => `
-            <div class="engine-item" data-index="${engineIndex}">
-              <span class="drag-handle">${dragIcon}</span>
-              <input type="text" class="engine-name" value="${escapeAttribute(engine.name)}"
-                data-original="${escapeAttribute(engine.name)}" data-i18n-placeholder="toolName">
-              <input type="text" class="engine-url" value="${escapeAttribute(engine.url)}"
-                data-i18n-placeholder="toolUrlPlaceholder">
-              <label class="switch">
-                <input type="checkbox" class="engine-toggle" ${engine.disable ? '' : 'checked'}>
-                <span class="slider"></span>
-              </label>
-              <button class="delete-engine">${deleteIcon}</button>
-            </div>
-          `).join('')}
-          <button class="add-engine" title="Add">+</button>
-        </div>
-      `;
-      container.appendChild(section);
-    });
+    state.activeCategoryIndex = Math.min(state.activeCategoryIndex, state.engines.length - 1);
+    const category = state.engines[state.activeCategoryIndex];
+    const engines = Array.isArray(category.engines) ? category.engines : [];
 
-    const addCategory = document.createElement('button');
-    addCategory.className = 'add-category';
-    addCategory.dataset.i18n = 'addCategory';
-    addCategory.textContent = SEOJumpI18n.t('addCategory');
-    container.appendChild(addCategory);
+    const categoryItems = state.engines.map((item, index) => `
+      <div class="category-list-item ${index === state.activeCategoryIndex ? 'active' : ''}" data-index="${index}">
+        <span class="drag-handle" title="Drag">${dragIcon}</span>
+        <button type="button" class="category-select" data-index="${index}" title="${escapeHtml(item.name)}">${escapeHtml(item.name)}</button>
+        <span class="category-tool-count">${Array.isArray(item.engines) ? item.engines.length : 0}</span>
+      </div>
+    `).join('');
+
+    const engineItems = engines.map((engine, engineIndex) => `
+      <div class="engine-item" data-index="${engineIndex}">
+        <span class="drag-handle" title="Drag">${dragIcon}</span>
+        <input type="text" class="engine-name" value="${escapeHtml(engine.name)}"
+          data-i18n-placeholder="toolName">
+        <input type="text" class="engine-url" value="${escapeHtml(engine.url)}"
+          data-i18n-placeholder="toolUrlPlaceholder">
+        <button type="button" class="edit-engine-url" title="${SEOJumpI18n.t('editUrl')}" aria-label="${SEOJumpI18n.t('editUrl')}">✎</button>
+        <label class="switch" title="${engine.disable ? 'Disabled' : 'Enabled'}">
+          <input type="checkbox" class="engine-toggle" ${engine.disable ? '' : 'checked'}>
+          <span class="slider"></span>
+        </label>
+        <button type="button" class="delete-engine">${deleteIcon}</button>
+      </div>
+    `).join('');
+
+    container.innerHTML = `
+      <div class="tools-manager">
+        <aside class="category-panel">
+          <div class="tools-panel-title">
+            <span>${SEOJumpI18n.t('categories')}</span>
+            <span class="tools-panel-count">${state.engines.length}</span>
+          </div>
+          <div class="category-list">${categoryItems}</div>
+          <button type="button" class="add-category">+ ${SEOJumpI18n.t('addCategory')}</button>
+        </aside>
+
+        <div class="category-editor" data-index="${state.activeCategoryIndex}">
+          <div class="category-header">
+            <input type="text" class="category-name" value="${escapeHtml(category.name)}" data-i18n-placeholder="categoryName">
+            <span class="category-meta">${engines.length} ${SEOJumpI18n.t('tools')}</span>
+            <label class="switch category-switch">
+              <input type="checkbox" class="category-toggle" ${category.disable ? '' : 'checked'}>
+              <span class="slider"></span>
+            </label>
+            <button type="button" class="delete-category" ${state.engines.length <= 1 ? 'disabled' : ''}>${deleteIcon}</button>
+          </div>
+          <div class="engines-list">${engineItems}</div>
+          <button type="button" class="add-engine">+ ${SEOJumpI18n.t('addTool')}</button>
+        </div>
+      </div>
+    `;
     SEOJumpI18n.apply(container);
   };
 
   app.initSortable = function initSortable() {
-    document.querySelectorAll('.engines-list').forEach(list => {
-      list._sortable = new Sortable(list, {
+    const categories = document.querySelector('.category-list');
+    if (categories) {
+      categories._sortable = new Sortable(categories, {
         animation: 150,
         handle: '.drag-handle',
-        filter: '.add-engine',
-        draggable: '.engine-item',
+        draggable: '.category-list-item',
         onEnd(event) {
-          const section = event.target.closest('.category-section');
-          const categoryIndex = Number(section?.dataset.index);
           const oldIndex = event.oldDraggableIndex ?? event.oldIndex;
           const newIndex = event.newDraggableIndex ?? event.newIndex;
-          if (!Number.isInteger(categoryIndex) || oldIndex === newIndex) return;
-          app.reorderEngine(categoryIndex, oldIndex, newIndex);
-          list.querySelectorAll('.engine-item').forEach((item, index) => {
-            item.dataset.index = index;
-          });
+          if (oldIndex === newIndex) return;
+          app.reorderCategory(oldIndex, newIndex);
+          app.renderSearchEngines();
+          app.initSortable();
         }
       });
+    }
+
+    const list = document.querySelector('.engines-list');
+    if (!list) return;
+    list._sortable = new Sortable(list, {
+      animation: 150,
+      handle: '.drag-handle',
+      draggable: '.engine-item',
+      onEnd(event) {
+        const editor = event.target.closest('.category-editor');
+        const categoryIndex = Number(editor?.dataset.index);
+        const oldIndex = event.oldDraggableIndex ?? event.oldIndex;
+        const newIndex = event.newDraggableIndex ?? event.newIndex;
+        if (!Number.isInteger(categoryIndex) || oldIndex === newIndex) return;
+        app.reorderEngine(categoryIndex, oldIndex, newIndex);
+        list.querySelectorAll('.engine-item').forEach((item, index) => {
+          item.dataset.index = index;
+        });
+      }
     });
   };
 
@@ -146,6 +159,7 @@
     app.renderCategoryMenu();
     app.initSortable();
     SEOJumpI18n.apply();
+    app.setSaveStatus(state.saveStatus);
   };
 
   app.showUrlEditModal = function showUrlEditModal(input, engineName) {

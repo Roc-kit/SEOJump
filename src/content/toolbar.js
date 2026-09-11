@@ -10,6 +10,7 @@
     const icon = document.createElement('img');
     icon.className = 'search-engine-icon';
     icon.src = chrome.runtime.getURL('icons/icon32.png');
+    icon.onerror = () => { icon.src = chrome.runtime.getURL('icons/icon32.png'); };
     app.getFavicon(engine).then(url => { icon.src = url; });
 
     const name = document.createElement('span');
@@ -32,6 +33,7 @@
       const icon = document.createElement('img');
       icon.className = 'search-engine-icon';
       icon.src = chrome.runtime.getURL('icons/icon32.png');
+      icon.onerror = () => { icon.src = chrome.runtime.getURL('icons/icon32.png'); };
       app.getFavicon(engines[0]).then(url => { icon.src = url; });
 
       const name = document.createElement('span');

@@ -1,16 +1,6 @@
 (() => {
   const app = globalThis.SEOJumpOptions;
 
-  async function save() {
-    try {
-      await app.saveEngines();
-      app.showMessage(SEOJumpI18n.t('saveSuccess'), 'success');
-    } catch (error) {
-      console.error('[SEOJump] Save failed:', error);
-      app.showMessage(SEOJumpI18n.t('saveFailed'), 'error');
-    }
-  }
-
   async function reset() {
     if (!confirm(SEOJumpI18n.t('resetConfirm'))) return;
     try {
@@ -23,34 +13,79 @@
     }
   }
 
-  function handleSearchToolEvent(event) {
-    const target = event.target;
-    const section = target.closest('.category-section');
-    const categoryIndex = Number(section?.dataset.index);
+  function renderToolsAndFocus(selector) {
+    app.renderSearchEngines();
+    app.initSortable();
+    requestAnimationFrame(() => document.querySelector(selector)?.focus());
+  }
 
-    if (target.classList.contains('add-category')) {
-      app.addCategory();
-      app.renderAll();
+  function handleToolsClick(event) {
+    const target = event.target;
+    const categorySelect = target.closest('.category-select');
+    if (categorySelect) {
+      const index = Number(categorySelect.dataset.index);
+      if (app.selectCategory(index)) {
+        app.renderSearchEngines();
+        app.initSortable();
+      }
       return;
     }
+
+    if (target.closest('.add-category')) {
+      app.addCategory();
+      renderToolsAndFocus('.category-name');
+      return;
+    }
+
+    const editor = target.closest('.category-editor');
+    const categoryIndex = Number(editor?.dataset.index);
+    if (!Number.isInteger(categoryIndex)) return;
+
+    if (target.closest('.delete-category')) {
+      if (app.deleteCategory(categoryIndex)) {
+        app.renderSearchEngines();
+        app.initSortable();
+      }
+      return;
+    }
+
+    if (target.closest('.add-engine')) {
+      app.addEngine(categoryIndex);
+      renderToolsAndFocus('.engine-item:last-of-type .engine-name');
+      return;
+    }
+
+    const engineItem = target.closest('.engine-item');
+    const engineIndex = Number(engineItem?.dataset.index);
+    if (!Number.isInteger(engineIndex)) return;
+
+    if (target.closest('.delete-engine')) {
+      app.deleteEngine(categoryIndex, engineIndex);
+      app.renderSearchEngines();
+      app.initSortable();
+      return;
+    }
+
+    if (target.closest('.edit-engine-url')) {
+      const input = engineItem.querySelector('.engine-url');
+      const name = engineItem.querySelector('.engine-name')?.value || '';
+      if (input) app.showUrlEditModal(input, name);
+    }
+  }
+
+  function handleToolsInput(event) {
+    const target = event.target;
+    const editor = target.closest('.category-editor');
+    const categoryIndex = Number(editor?.dataset.index);
     if (!Number.isInteger(categoryIndex)) return;
 
     if (target.classList.contains('category-name')) {
       app.updateCategory(categoryIndex, { name: target.value });
-      app.renderCategoryMenu();
-      return;
-    }
-    if (target.classList.contains('category-toggle')) {
-      app.updateCategory(categoryIndex, { disable: !target.checked });
-      return;
-    }
-    if (target.closest('.delete-category')) {
-      if (app.deleteCategory(categoryIndex)) app.renderAll();
-      return;
-    }
-    if (target.classList.contains('add-engine')) {
-      app.addEngine(categoryIndex);
-      app.renderAll();
+      const categoryButton = document.querySelector(`.category-select[data-index="${categoryIndex}"]`);
+      if (categoryButton) {
+        categoryButton.textContent = target.value || SEOJumpI18n.t('categoryName');
+        categoryButton.title = target.value;
+      }
       return;
     }
 
@@ -61,12 +96,31 @@
       app.updateEngine(categoryIndex, engineIndex, { name: target.value });
     } else if (target.classList.contains('engine-url')) {
       app.updateEngine(categoryIndex, engineIndex, { url: target.value });
-    } else if (target.classList.contains('engine-toggle')) {
-      app.updateEngine(categoryIndex, engineIndex, { disable: !target.checked });
-    } else if (target.closest('.delete-engine')) {
-      app.deleteEngine(categoryIndex, engineIndex);
-      app.renderAll();
     }
+  }
+
+  function handleToolsChange(event) {
+    const target = event.target;
+    const editor = target.closest('.category-editor');
+    const categoryIndex = Number(editor?.dataset.index);
+    if (!Number.isInteger(categoryIndex)) return;
+
+    if (target.classList.contains('category-toggle')) {
+      app.updateCategory(categoryIndex, { disable: !target.checked }, { immediate: true });
+      return;
+    }
+
+    const engineItem = target.closest('.engine-item');
+    const engineIndex = Number(engineItem?.dataset.index);
+    if (!Number.isInteger(engineIndex)) return;
+    if (target.classList.contains('engine-toggle')) {
+      app.updateEngine(categoryIndex, engineIndex, { disable: !target.checked }, { immediate: true });
+    }
+  }
+
+  function flushTextEditOnBlur(event) {
+    if (!event.target.matches('.category-name, .engine-name, .engine-url')) return;
+    if (app.state.hasUnsavedChanges) app.saveEngines().catch(() => {});
   }
 
   async function bindPreferenceControls() {
@@ -78,8 +132,8 @@
 
     language.addEventListener('change', async () => {
       await SEOJumpI18n.setLanguage(language.value);
-      app.renderCategoryMenu();
       document.title = SEOJumpI18n.t('optionsTitle');
+      app.renderAll();
     });
     trigger.addEventListener('change', () => {
       SEOJumpSettings.updateSettings({ selectionTriggerMode: trigger.value });
@@ -93,7 +147,6 @@
       await bindPreferenceControls();
       app.renderAll();
 
-      document.getElementById('saveBtn').addEventListener('click', save);
       document.getElementById('exportBtn').addEventListener('click', app.showExportDialog);
       document.getElementById('importBtn').addEventListener('click', app.showImportDialog);
       document.getElementById('resetBtn').addEventListener('click', reset);
@@ -101,13 +154,21 @@
       document.getElementById('importFromCSV').addEventListener('change', app.importCsv);
 
       const tools = document.getElementById('search-engines');
-      tools.addEventListener('click', handleSearchToolEvent);
-      tools.addEventListener('input', handleSearchToolEvent);
-      tools.addEventListener('change', handleSearchToolEvent);
+      tools.addEventListener('click', handleToolsClick);
+      tools.addEventListener('input', handleToolsInput);
+      tools.addEventListener('change', handleToolsChange);
+      tools.addEventListener('focusout', flushTextEditOnBlur);
       tools.addEventListener('dblclick', event => {
         if (!event.target.classList.contains('engine-url')) return;
-        const name = event.target.previousElementSibling?.value || '';
+        const item = event.target.closest('.engine-item');
+        const name = item?.querySelector('.engine-name')?.value || '';
         app.showUrlEditModal(event.target, name);
+      });
+
+      document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'hidden' && app.state.hasUnsavedChanges) {
+          app.saveEngines().catch(() => {});
+        }
       });
     } catch (error) {
       console.error('[SEOJump] Options initialization failed:', error);

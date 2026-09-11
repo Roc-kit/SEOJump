@@ -6,7 +6,8 @@
   "permissions": [
     "storage",
     "contextMenus",
-    "tabs"
+    "tabs",
+    "favicon"
   ],
   "host_permissions": [
     "*://*/*"
@@ -16,9 +17,11 @@
       "resources": [
         "config/*",
         "icons/*",
-        "image/*"
+        "image/*",
+        "_favicon/*"
       ],
-      "matches": ["*://*/*"]
+      "matches": ["*://*/*"],
+      "extension_ids": ["*"]
     }
   ],
   "content_scripts": [

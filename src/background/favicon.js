@@ -1,45 +1,92 @@
 (() => {
   const app = globalThis.SEOJumpBackground = globalThis.SEOJumpBackground || {};
-  let availableApi = null;
-  let apiTestPromise = null;
+  const REQUEST_TIMEOUT_MS = 2200;
+  let yandexFailureSignaturePromise = null;
 
-  async function testApi(apiTemplate, testDomain) {
+  function providerUrls(domain) {
+    return {
+      direct: `https://${domain}/favicon.ico`,
+      duckduckgo: `https://external-content.duckduckgo.com/ip3/${domain}.ico`,
+      google: `https://www.google.com/s2/favicons?domain=${encodeURIComponent(domain)}&sz=32`,
+      yandex: `https://favicon.yandex.net/favicon/v2/${encodeURIComponent(domain)}?size=32`
+    };
+  }
+
+  function isLikelyImage(blob, contentType) {
+    if (!blob || blob.size < 64) return false;
+    const type = String(contentType || blob.type || '').toLowerCase();
+    return type.startsWith('image/') || type.includes('octet-stream') || type.includes('icon');
+  }
+
+  async function fetchIcon(source, url) {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
     try {
-      const response = await fetch(apiTemplate.replace('${domain}', testDomain), {
+      const response = await fetch(url, {
         referrerPolicy: 'no-referrer',
-        credentials: 'omit'
+        credentials: 'omit',
+        headers: { Accept: 'image/*,*/*;q=0.5' },
+        signal: controller.signal
       });
-      if (!response.ok) return false;
-      return (await response.blob()).type.startsWith('image/');
+      if (!response.ok) return null;
+      const blob = await response.blob();
+      if (!isLikelyImage(blob, response.headers.get('content-type'))) return null;
+      return { source, blob };
     } catch (_) {
-      return false;
+      return null;
+    } finally {
+      clearTimeout(timer);
     }
   }
 
-  async function getAvailableApi() {
-    if (availableApi) return availableApi;
-    if (apiTestPromise) return apiTestPromise;
+  async function blobSignature(blob) {
+    const digest = await crypto.subtle.digest('SHA-256', await blob.arrayBuffer());
+    return Array.from(new Uint8Array(digest).slice(0, 12))
+      .map(value => value.toString(16).padStart(2, '0'))
+      .join('');
+  }
 
-    apiTestPromise = (async () => {
-      const templates = [
-        'https://www.google.com/s2/favicons?domain=${domain}&sz=32',
-        'https://favicon.yandex.net/favicon/v2/${domain}?size=32',
-        'https://external-content.duckduckgo.com/ip3/${domain}'
-      ];
-      for (const template of templates) {
-        if (await testApi(template, 'www.google.com')) {
-          availableApi = template;
-          return template;
-        }
+  function getYandexFailureSignature() {
+    if (yandexFailureSignaturePromise) return yandexFailureSignaturePromise;
+    const missingDomain = 'seojump-favicon-missing.invalid';
+    const missingUrl = providerUrls(missingDomain).yandex;
+    yandexFailureSignaturePromise = fetchIcon('yandex-failure', missingUrl)
+      .then(result => result ? blobSignature(result.blob) : null)
+      .catch(() => null);
+    return yandexFailureSignaturePromise;
+  }
+
+  async function fetchVerifiedYandex(domain, url) {
+    const [candidate, failureSignature] = await Promise.all([
+      fetchIcon('yandex', url),
+      getYandexFailureSignature()
+    ]);
+    if (!candidate || !failureSignature) return candidate;
+    const candidateSignature = await blobSignature(candidate.blob);
+    return candidateSignature === failureSignature ? null : candidate;
+  }
+
+  async function firstSuccessful(promises) {
+    return new Promise(resolve => {
+      let remaining = promises.length;
+      if (!remaining) {
+        resolve(null);
+        return;
       }
-      return null;
-    })();
-
-    try {
-      return await apiTestPromise;
-    } finally {
-      apiTestPromise = null;
-    }
+      promises.forEach(promise => {
+        Promise.resolve(promise).then(result => {
+          if (result) {
+            resolve(result);
+            return;
+          }
+          remaining -= 1;
+          if (!remaining) resolve(null);
+        }).catch(() => {
+          remaining -= 1;
+          if (!remaining) resolve(null);
+        });
+      });
+    });
   }
 
   function blobToBase64(blob) {
@@ -53,15 +100,27 @@
 
   app.handleFaviconRequest = async function handleFaviconRequest(domain) {
     try {
-      const api = await getAvailableApi();
-      if (!api) return { success: false };
-      const response = await fetch(api.replace('${domain}', domain), {
-        referrerPolicy: 'no-referrer',
-        credentials: 'omit',
-        headers: { Accept: 'image/*' }
-      });
-      if (!response.ok) return { success: false };
-      return { success: true, iconData: await blobToBase64(await response.blob()) };
+      if (!domain || !/^[a-z0-9.-]+$/i.test(domain)) return { success: false };
+      const urls = providerUrls(domain);
+
+      // Try independent sources per domain. A provider working for one domain
+      // does not imply it works for another domain or network.
+      let result = await firstSuccessful([
+        fetchIcon('direct', urls.direct),
+        fetchIcon('duckduckgo', urls.duckduckgo),
+        fetchIcon('google', urls.google)
+      ]);
+
+      // Yandex often returns a generic image for unknown domains, so keep it
+      // as the final network fallback instead of letting it win the first race.
+      if (!result) result = await fetchVerifiedYandex(domain, urls.yandex);
+      if (!result) return { success: false };
+
+      return {
+        success: true,
+        source: result.source,
+        iconData: await blobToBase64(result.blob)
+      };
     } catch (error) {
       console.warn('[SEOJump] Favicon request failed:', error);
       return { success: false };

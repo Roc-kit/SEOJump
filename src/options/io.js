@@ -84,6 +84,10 @@
   app.importCsv = async function importCsv(event) {
     const file = event.target.files?.[0];
     if (!file) return;
+    if (!confirm(SEOJumpI18n.t('importReplaceConfirm'))) {
+      event.target.value = '';
+      return;
+    }
     try {
       const rows = parseCsv(await file.text());
       if (rows.length < 2) throw new Error('No rows');
@@ -128,6 +132,7 @@
       const engines = [...categories.values()];
       if (!engines.length) throw new Error('No valid engines');
       app.setEngines(engines);
+      await app.saveEngines();
       app.renderAll();
       app.showMessage(SEOJumpI18n.t('importSuccess'), 'success');
     } catch (error) {
@@ -141,10 +146,15 @@
   app.importJson = async function importJson(event) {
     const file = event.target.files?.[0];
     if (!file) return;
+    if (!confirm(SEOJumpI18n.t('importReplaceConfirm'))) {
+      event.target.value = '';
+      return;
+    }
     try {
       const settings = JSON.parse(await file.text());
       if (!Array.isArray(settings.searchEngines)) throw new Error('Invalid settings');
       app.setEngines(settings.searchEngines);
+      await app.saveEngines();
       app.renderAll();
       app.showMessage(SEOJumpI18n.t('importSuccess'), 'success');
     } catch (error) {

@@ -69,20 +69,57 @@
       const key = `favicon_${domain}`;
       const result = await chrome.storage.local.get(key);
       const cached = result[key];
-      return typeof cached === 'string' && cached.startsWith('data:image') ? cached : null;
+      if (typeof cached === 'string' && cached.startsWith('data:image')) return cached;
+      if (!cached || typeof cached !== 'object') return null;
+      const maxAge = 30 * 24 * 60 * 60 * 1000;
+      if (!cached.data?.startsWith('data:image') || Date.now() - Number(cached.fetchedAt || 0) > maxAge) {
+        return null;
+      }
+      return cached.data;
     } catch (_) {
       return null;
     }
   };
 
-  app.saveIconToCache = async function saveIconToCache(domain, iconData) {
+  app.saveIconToCache = async function saveIconToCache(domain, iconData, source = 'unknown') {
     if (!iconData?.startsWith('data:image')) return;
     try {
-      await chrome.storage.local.set({ [`favicon_${domain}`]: iconData });
+      await chrome.storage.local.set({
+        [`favicon_${domain}`]: {
+          data: iconData,
+          source,
+          fetchedAt: Date.now()
+        },
+        [`favicon_miss_${domain}`]: null
+      });
     } catch (error) {
       console.warn('[SEOJump] Failed to cache favicon:', error);
     }
   };
+
+  app.getChromeFaviconUrl = function getChromeFaviconUrl(domain) {
+    const url = new URL(chrome.runtime.getURL('/_favicon/'));
+    url.searchParams.set('pageUrl', `https://${domain}/`);
+    url.searchParams.set('size', '32');
+    return url.toString();
+  };
+
+  async function hasRecentFaviconMiss(domain) {
+    try {
+      const key = `favicon_miss_${domain}`;
+      const result = await chrome.storage.local.get(key);
+      const timestamp = Number(result[key] || 0);
+      return timestamp > 0 && Date.now() - timestamp < 6 * 60 * 60 * 1000;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  async function markFaviconMiss(domain) {
+    try {
+      await chrome.storage.local.set({ [`favicon_miss_${domain}`]: Date.now() });
+    } catch (_) {}
+  }
 
   app.getFavicon = async function getFavicon(engine) {
     const fallback = chrome.runtime.getURL('icons/icon32.png');
@@ -94,11 +131,15 @@
       const cached = await app.loadIconFromCache(domain);
       if (cached) return cached;
 
+      if (await hasRecentFaviconMiss(domain)) return app.getChromeFaviconUrl(domain);
+
       const response = await chrome.runtime.sendMessage({ type: 'getFavicon', domain });
       if (response?.success && response.iconData?.startsWith('data:image')) {
-        await app.saveIconToCache(domain, response.iconData);
+        await app.saveIconToCache(domain, response.iconData, response.source);
         return response.iconData;
       }
+      await markFaviconMiss(domain);
+      return app.getChromeFaviconUrl(domain);
     } catch (error) {
       console.warn('[SEOJump] Failed to load favicon:', error);
     }
