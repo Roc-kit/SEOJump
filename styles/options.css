@@ -1,14 +1,17 @@
 .toolbar {
     background: white;
-    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
     padding: 20px;
     margin-bottom: 20px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05);
 }
 
 .toolbar h2 {
     margin-top: 0;
     margin-bottom: 20px;
+    font-size: 18px;
+    font-weight: 600;
 }
 
 #general-settings {

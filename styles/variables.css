@@ -1,4 +1,3 @@
-
 :root {
     --primary-color: #0561f3;
     --primary-hover-color: #034fd1;
@@ -6,9 +5,10 @@
     --accent-color: #17bcf1;
     --primary-soft-color: #eef6ff;
     --hover-color: #f3f8ff;
-    --border-color: #d8e7f7;
+    --border-color: #dfe6ee;
     --text-color: #172033;
     --text-color-secondary: #5f6f85;
     --sidebar-width: 280px;
     --background-color: white;
+    --page-background-color: #f7f9fc;
 }
