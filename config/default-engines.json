@@ -235,6 +235,55 @@
         ]
     },
     {
+        "name": "Google SEO",
+        "engines": [
+            {
+                "name": "GSC Overview",
+                "url": "https://search.google.com/search-console?resource_id=sc-domain%3A%currentDomain%"
+            },
+            {
+                "name": "GSC Performance 28d",
+                "url": "https://search.google.com/search-console/performance/search-analytics?resource_id=sc-domain%3A%currentDomain%&num_of_days=28&metrics=CLICKS%2CIMPRESSIONS%2CCTR%2CPOSITION"
+            },
+            {
+                "name": "GSC URL Inspection",
+                "url": "https://search.google.com/search-console/inspect?resource_id=sc-domain%3A%currentDomain%&id=%currentUrl%"
+            },
+            {
+                "name": "Google Indexed Pages",
+                "url": "https://www.google.com/search?q=site%3A%currentDomain%"
+            },
+            {
+                "name": "Google Site Keyword",
+                "url": "https://www.google.com/search?q=site%3A%currentDomain%+%selectedText%"
+            },
+            {
+                "name": "Google Site Title",
+                "url": "https://www.google.com/search?q=site%3A%currentDomain%+intitle%3A%22%selectedText%%22"
+            },
+            {
+                "name": "Google Exact Phrase",
+                "url": "https://www.google.com/search?q=%22%selectedText%%22"
+            },
+            {
+                "name": "Google Intitle",
+                "url": "https://www.google.com/search?q=intitle%3A%22%selectedText%%22"
+            },
+            {
+                "name": "Google Inurl",
+                "url": "https://www.google.com/search?q=inurl%3A%22%selectedText%%22"
+            },
+            {
+                "name": "Google Competitor Pages",
+                "url": "https://www.google.com/search?q=%22%selectedText%%22+-site%3A%currentDomain%"
+            },
+            {
+                "name": "Google Domain Mentions",
+                "url": "https://www.google.com/search?q=%22%currentDomain%%22+-site%3A%currentDomain%"
+            }
+        ]
+    },
+    {
         "name": "Website",
         "engines": [
             {

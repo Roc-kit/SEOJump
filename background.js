@@ -6,14 +6,47 @@ importScripts(
 );
 
 const app = globalThis.SEOJumpBackground;
+const BUILTIN_ADDITIONS_VERSION = 1;
+const BUILTIN_ADDITIONS_KEY = 'builtinAdditionsVersion';
+
+async function loadDefaultEngines() {
+  const response = await fetch(chrome.runtime.getURL('config/default-engines.json'));
+  return response.json();
+}
+
+function insertGoogleSeoCategory(engines, defaults) {
+  if (engines.some(category => category?.name === 'Google SEO')) return engines;
+  const googleSeo = defaults.find(category => category?.name === 'Google SEO');
+  if (!googleSeo) return engines;
+
+  const next = [...engines];
+  const keywordIndex = next.findIndex(category => category?.name === 'Keyword');
+  next.splice(keywordIndex >= 0 ? keywordIndex + 1 : next.length, 0, googleSeo);
+  return next;
+}
 
 async function loadDefaultEnginesIfNeeded() {
-  const data = await chrome.storage.local.get('searchEngines');
-  if (Array.isArray(data.searchEngines)) return data.searchEngines;
-  const response = await fetch(chrome.runtime.getURL('config/default-engines.json'));
-  const defaults = await response.json();
-  await chrome.storage.local.set({ searchEngines: defaults });
-  return defaults;
+  const data = await chrome.storage.local.get(['searchEngines', BUILTIN_ADDITIONS_KEY]);
+  const defaults = await loadDefaultEngines();
+
+  if (!Array.isArray(data.searchEngines)) {
+    await chrome.storage.local.set({
+      searchEngines: defaults,
+      [BUILTIN_ADDITIONS_KEY]: BUILTIN_ADDITIONS_VERSION
+    });
+    return defaults;
+  }
+
+  if ((data[BUILTIN_ADDITIONS_KEY] || 0) >= BUILTIN_ADDITIONS_VERSION) {
+    return data.searchEngines;
+  }
+
+  const engines = insertGoogleSeoCategory(data.searchEngines, defaults);
+  await chrome.storage.local.set({
+    searchEngines: engines,
+    [BUILTIN_ADDITIONS_KEY]: BUILTIN_ADDITIONS_VERSION
+  });
+  return engines;
 }
 
 async function initialize() {
