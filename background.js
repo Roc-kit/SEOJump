@@ -6,7 +6,7 @@ importScripts(
 );
 
 const app = globalThis.SEOJumpBackground;
-const BUILTIN_ADDITIONS_VERSION = 1;
+const BUILTIN_ADDITIONS_VERSION = 2;
 const BUILTIN_ADDITIONS_KEY = 'builtinAdditionsVersion';
 
 async function loadDefaultEngines() {
@@ -14,12 +14,17 @@ async function loadDefaultEngines() {
   return response.json();
 }
 
-function insertGoogleSeoCategory(engines, defaults) {
-  if (engines.some(category => category?.name === 'Google SEO')) return engines;
+function syncGoogleSeoCategory(engines, defaults) {
   const googleSeo = defaults.find(category => category?.name === 'Google SEO');
   if (!googleSeo) return engines;
 
   const next = [...engines];
+  const existingIndex = next.findIndex(category => category?.name === 'Google SEO');
+  if (existingIndex >= 0) {
+    next.splice(existingIndex, 1, googleSeo);
+    return next;
+  }
+
   const keywordIndex = next.findIndex(category => category?.name === 'Keyword');
   next.splice(keywordIndex >= 0 ? keywordIndex + 1 : next.length, 0, googleSeo);
   return next;
@@ -41,7 +46,7 @@ async function loadDefaultEnginesIfNeeded() {
     return data.searchEngines;
   }
 
-  const engines = insertGoogleSeoCategory(data.searchEngines, defaults);
+  const engines = syncGoogleSeoCategory(data.searchEngines, defaults);
   await chrome.storage.local.set({
     searchEngines: engines,
     [BUILTIN_ADDITIONS_KEY]: BUILTIN_ADDITIONS_VERSION
