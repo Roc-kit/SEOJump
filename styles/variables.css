@@ -10,5 +10,8 @@
     --text-color-secondary: #5f6f85;
     --sidebar-width: 280px;
     --background-color: white;
-    --page-background-color: #f7f9fc;
+    --page-background-color: #eef0f2;
+    --canvas-background-color: #ffffff;
+    --workspace-background-color: #fbfcfd;
+    --canvas-border-color: #d9dde3;
 }

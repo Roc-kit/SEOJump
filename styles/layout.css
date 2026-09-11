@@ -7,14 +7,17 @@ body {
 }
 
 .container {
-    min-height: 100vh;
+    min-height: calc(100vh - 48px);
     max-width: 1120px;
-    margin: 0 auto;
+    margin: 24px auto;
+    background: var(--canvas-background-color);
+    border: 1px solid var(--canvas-border-color);
+    box-sizing: border-box;
 }
 
 .main-content {
     width: 100%;
-    padding: 22px 32px 40px;
+    padding: 24px 32px 36px;
     box-sizing: border-box;
     overflow-x: hidden;
 }
@@ -24,6 +27,13 @@ body {
 }
 
 @media (max-width: 760px) {
+    .container {
+        min-height: 100vh;
+        margin: 0;
+        border-left: 0;
+        border-right: 0;
+    }
+
     .main-content {
         padding: 16px;
     }

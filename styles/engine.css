@@ -7,14 +7,14 @@
     overflow: hidden;
     border: 1px solid var(--border-color);
     border-radius: 6px;
-    background: var(--background-color);
+    background: var(--workspace-background-color);
 }
 
 .category-panel,
 .category-editor {
     border: 0;
     border-radius: 0;
-    background: var(--background-color);
+    background: transparent;
 }
 
 .category-panel {
