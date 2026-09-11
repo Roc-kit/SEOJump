@@ -47,9 +47,13 @@
     font-weight: 500;
 }
 
+.nav-menu > li > a:hover {
+    background-color: var(--hover-color);
+    color: rgb(114, 89, 254);
+}
 
 .category-menu-list {
-    padding-left: 50px;
+    padding-left: 40px;
 }
 
 

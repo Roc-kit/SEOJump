@@ -5,7 +5,6 @@ let menuCreationInProgress = false;
 
 // Update context menus function
 async function updateContextMenus(settings) {
-    // 如果已经在创建菜单，则跳过
     if (menuCreationInProgress) {
         console.warn('Menu creation already in progress, skipping...');
         return;
@@ -16,8 +15,7 @@ async function updateContextMenus(settings) {
 
         // Remove all existing context menu items first
         await chrome.contextMenus.removeAll();
-        
-        // 添加一个短暂的延迟，确保菜单项被完全清理
+
         await new Promise(resolve => setTimeout(resolve, 100));
 
         // Validate settings
@@ -65,7 +63,7 @@ async function updateContextMenus(settings) {
         }
     } catch (error) {
         console.error('Error updating context menus:', error);
-        // 如果发生错误，尝试再次清理所有菜单项
+
         try {
             await chrome.contextMenus.removeAll();
         } catch (cleanupError) {
@@ -95,69 +93,105 @@ async function initialize() {
     }
 }
 
+
+// Handle placeholder replacement
+function processPlaceholders(url, text, context = {}) {
+    return url
+        .replace(/%selectedText%/g, text || '')
+        .replace(/%currentUrl%/g, context.currentUrl || '')
+        .replace(/%currentDomain%/g, context.currentDomain || '');
+}
+
+
 // Parse special parameters from URL
 function parseSpecialParams(url) {
-    const urlObj = new URL(url);
-    const params = new URLSearchParams(urlObj.search);
-    const specialParams = {};
+    console.log('Original URL:', url);
 
-    // Check if advanced feature flags are present
-    if (params.has('__ess_start')) {
-        specialParams.hasAdvanced = true;
-        
-        if (params.has('__delay')) {
-            specialParams.delay = parseInt(params.get('__delay')) || 0;
-        }
+    const specialParams = {
+        hasAdvanced: false,
+        delay: 0,
+        incognito: false,
+        inputSelector: '',
+        submitSelector: '',
+        bruteSelector: '',
+        text: ''
+    };
 
-        if (params.has('__incognito')) {
-            specialParams.incognito = params.get('__incognito') === 'true';
-        }
-
-        if (params.has('__input')) {
-            specialParams.inputSelector = params.get('__input');
-        }
-
-        if (params.has('__submit')) {
-            specialParams.submitSelector = params.get('__submit');
-        }
-
-        if (params.has('__bruteAction')) {
-            specialParams.bruteSelector = params.get('__bruteAction');
-        }
-
-        if (params.has('__text')) {
-            specialParams.text = params.get('__text');
-        }
+    if (!url.includes('__ess_start')) {
+        return specialParams;
     }
 
+    specialParams.hasAdvanced = true;
+
+    const paramsString = url.split('__ess_start')[1];
+    console.log('Parameters string:', paramsString);
+
+    const paramKeys = [
+        '__delay',
+        '__incognito',
+        '__input',
+        '__submit',
+        '__bruteAction',
+        '__text'
+    ];
+
+    const parseParam = (paramName) => {
+        const regex = new RegExp(`${paramName}=([^&]+)`);
+        const match = paramsString.match(regex);
+
+        if (match) {
+            const value = match[1];
+            console.log(`Parsing ${paramName}:`, value);
+            return value;
+        }
+        return '';
+    };
+
+    paramKeys.forEach(key => {
+        switch (key) {
+            case '__delay':
+                const delayValue = parseParam(key);
+                specialParams.delay = parseInt(delayValue) || 0;
+                break;
+            case '__incognito':
+                const incognitoValue = parseParam(key);
+                specialParams.incognito = incognitoValue === 'true';
+                break;
+            case '__input':
+                specialParams.inputSelector = parseParam(key);
+                break;
+            case '__submit':
+                specialParams.submitSelector = parseParam(key);
+                break;
+            case '__bruteAction':
+                specialParams.bruteSelector = parseParam(key);
+                break;
+            case '__text':
+                const textValue = parseParam(key);
+                try {
+                    specialParams.text = textValue === '%selectedText%'
+                        ? textValue
+                        : decodeURIComponent(textValue);
+                } catch (error) {
+                    console.warn('URI decoding error:', error);
+                    specialParams.text = textValue;
+                }
+                break;
+        }
+    });
+
+    console.log('Final special parameters:', specialParams);
     return specialParams;
 }
 
 // Clean special parameters from URL
 function cleanUrl(url) {
-    const cleaned = url
-        // Remove __ess_start parameter
-        .replace(/[?&]__ess_start(&|$)/, (match, p1) => p1 === '&' ? '&' : '')
-        // Remove other special parameters
-        .replace(/[?&]__delay=[^&]*/g, '')
-        .replace(/[?&]__incognito=[^&]*/g, '')
-        .replace(/[?&]__input=[^&]*/g, '')
-        .replace(/[?&]__submit=[^&]*/g, '')
-        .replace(/[?&]__bruteAction=[^&]*/g, '')
-        .replace(/[?&]__text=[^&]*/g, '')
-        // Clean up excess connectors
-        .replace(/\?&/, '?')
-        .replace(/&&/g, '&')
-        .replace(/[?&]$/, '');
-    
-    return cleaned;
-}
+    const cleaned = url.replace(/[?&]__ess_start.*$/, '');
 
-// Handle placeholder replacement
-function processPlaceholders(url, text, context = {}) {
-    return url.replace(/%selectedText%/g, encodeURIComponent(text))
-              .replace(/%currentUrl%/g, context.currentUrl || '')
-              .replace(/%currentDomain%/g, context.currentDomain || '');
+    console.log('Original URL:', url);
+    console.log('Cleaned URL:', cleaned);
+
+    return cleaned;
 }
 
 // Handle search request
@@ -251,10 +285,10 @@ async function handleSearch(url, text, context = {}, inBackground = false) {
                 const targetHostname = new URL(url).hostname;
 
                 // When page starts loading, execute immediately without extra delay
-                if ((changeInfo.status === 'loading' || changeInfo.status === 'complete') && 
-                    tab.url && 
+                if ((changeInfo.status === 'loading' || changeInfo.status === 'complete') &&
+                    tab.url &&
                     new URL(tab.url).hostname === targetHostname) {
-                    
+
                     // Execute immediately without extra delay
                     sendMessageWithRetry(tabId).then(() => {
                         chrome.tabs.onUpdated.removeListener(listener);
@@ -280,7 +314,7 @@ async function testSingleApi(apiTemplate, testDomain) {
             referrerPolicy: 'no-referrer',
             credentials: 'omit'
         });
-        
+
         if (!response.ok) {
             return false;
         }
@@ -359,9 +393,9 @@ async function handleFaviconRequest(domain) {
         const blob = await response.blob();
         const iconData = await blobToBase64(blob);
 
-        return { 
-            success: true, 
-            iconData: iconData 
+        return {
+            success: true,
+            iconData: iconData
         };
     } catch (error) {
         console.warn('Error fetching favicon:', error);
@@ -443,15 +477,15 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
         }
 
         const [_, categoryIndex, engineIndex] = matches;
-        
+
         // Get current search engine settings
         const data = await chrome.storage.local.get(['searchEngines']);
         const settings = data.searchEngines;
 
         // Validate settings and indices
-        if (!settings || 
-            !settings[categoryIndex] || 
-            !settings[categoryIndex].engines || 
+        if (!settings ||
+            !settings[categoryIndex] ||
+            !settings[categoryIndex].engines ||
             !settings[categoryIndex].engines[engineIndex]) {
             console.error('Invalid engine indices:', {
                 categoryIndex,
@@ -494,7 +528,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.type === 'settingsUpdated') {
         updateContextMenus(message.searchEngines);
         sendResponse({ success: true });
-    } 
+    }
     // Handle request to open options page
     else if (message.action === 'openOptionsPage') {
         chrome.runtime.openOptionsPage();

@@ -314,7 +314,8 @@ function renderSearchEngines() {
                 input.addEventListener('dblclick', function(e) {
                     e.preventDefault();
                     currentEditingUrlInput = this;
-                    showUrlEditModal(this.value);
+                    const engineName = this.previousElementSibling.value;
+                    showUrlEditModal(this.value, engineName);
                 });
             }
         });
@@ -701,39 +702,42 @@ function showImportDialog() {
 
 let currentEditingUrlInput = null;
 
-function showUrlEditModal(currentUrl) {
+function showUrlEditModal(currentUrl, engineName) {
     const modal = document.getElementById('urlEditModal');
+    const modalTitle = modal.querySelector('.modal-title');
     const modalInput = modal.querySelector('.modal-url-input');
     const modalSaveBtn = document.getElementById('modalSaveBtn');
     const modalCancelBtn = document.getElementById('modalCancelBtn');
     const placeholdersContainer = document.getElementById('modal-placeholders');
-    
+
     const originalPlaceholders = document.getElementById('placeholders');
     placeholdersContainer.innerHTML = originalPlaceholders.innerHTML;
-    
+
+    modalTitle.textContent = `Edit URL for ${engineName}`;
     modalInput.value = currentUrl;
-    
+
     modal.style.display = 'block';
     modalInput.focus();
     modalInput.select();
-    
+
     const saveChanges = () => {
         if (currentEditingUrlInput && modalInput.value.trim() !== '') {
             currentEditingUrlInput.value = modalInput.value.trim();
+            currentEditingUrlInput.dispatchEvent(new Event('input', { bubbles: true }));
             markAsUnsaved();
         }
         modal.style.display = 'none';
         currentEditingUrlInput = null;
     };
-    
+
     const cancelChanges = () => {
         modal.style.display = 'none';
         currentEditingUrlInput = null;
     };
-    
+
     modalSaveBtn.onclick = saveChanges;
     modalCancelBtn.onclick = cancelChanges;
-    
+
     modalInput.onkeydown = (e) => {
         if (e.key === 'Enter' && e.ctrlKey) {
             saveChanges();
