@@ -1,6 +1,6 @@
 (() => {
   const app = globalThis.SEOJumpBackground = globalThis.SEOJumpBackground || {};
-  const ADVANCED_MARKERS = ['__seojump_start', '__ess_start'];
+  const ADVANCED_MARKER = '__seojump_start';
 
   app.processPlaceholders = function processPlaceholders(value, text, context = {}) {
     return String(value || '')
@@ -10,7 +10,7 @@
   };
 
   function getAdvancedMarker(url) {
-    return ADVANCED_MARKERS.find(marker => url.includes(marker)) || '';
+    return url.includes(ADVANCED_MARKER) ? ADVANCED_MARKER : '';
   }
 
   function readAdvancedParam(source, name) {

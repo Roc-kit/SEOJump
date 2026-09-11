@@ -28,7 +28,7 @@ async function initialize() {
 
 chrome.runtime.onInstalled.addListener(async details => {
   await chrome.storage.local.remove('operationLogs');
-  await SEOJumpSettings.initializeSettings({ freshInstall: details.reason === 'install' });
+  await SEOJumpSettings.initializeSettings();
   const engines = await loadDefaultEnginesIfNeeded();
   await app.updateContextMenus(engines);
 

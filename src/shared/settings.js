@@ -8,7 +8,7 @@
 
   const DEFAULTS = {
     uiLanguage: detectLanguage(),
-    selectionTriggerMode: 'always'
+    selectionTriggerMode: 'modifier'
   };
 
   async function getSettings() {
@@ -26,18 +26,13 @@
     return next;
   }
 
-  async function initializeSettings({ freshInstall = false } = {}) {
+  async function initializeSettings() {
     const data = await chrome.storage.local.get(STORAGE_KEY);
     if (data[STORAGE_KEY]) {
       return { ...DEFAULTS, ...data[STORAGE_KEY] };
     }
 
-    const initial = {
-      ...DEFAULTS,
-      // Existing users keep the historical auto-show behavior after update.
-      // Fresh installs use the less intrusive Ctrl + selection mode.
-      selectionTriggerMode: freshInstall ? 'modifier' : 'always'
-    };
+    const initial = { ...DEFAULTS };
     await chrome.storage.local.set({ [STORAGE_KEY]: initial });
     return initial;
   }

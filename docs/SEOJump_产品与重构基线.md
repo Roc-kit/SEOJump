@@ -106,12 +106,12 @@ Advanced / Experimental
 
 原因是它依赖目标网站 DOM、CSS Selector、SPA 渲染和前端框架行为，无法达到普通 URL Template 同等稳定性。
 
-### 现有协议继续兼容
+### Advanced Action 协议
 
-旧配置继续支持：
+统一使用：
 
 ```text
-__ess_start
+__seojump_start
 __delay
 __incognito
 __input
@@ -119,14 +119,6 @@ __submit
 __bruteAction
 __text
 ```
-
-同时解析器支持新的：
-
-```text
-__seojump_start
-```
-
-不要求批量迁移历史配置。
 
 ### 本轮稳定性增强
 
@@ -139,7 +131,7 @@ selector1 || selector2 || selector3
 ```
 
 4. 输入后再次读取 value / textContent；若目标框架没有接受第一次写入，则进行一次 fallback 写入。
-5. `__bruteAction` 继续保留，但属于最高风险兼容模式。
+5. `__bruteAction` 继续保留，但属于最高风险实验模式。
 
 ## 7. 中英文界面
 

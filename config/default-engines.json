@@ -8,7 +8,7 @@
             },
             {
                 "name": "TikTok keyword insights",
-                "url": "https://ads.tiktok.com/business/creativecenter/keyword-insights/pc/en?__ess_start&__bruteAction=input[placeholder='Search by keyword']&__text=%selectedText%"
+                "url": "https://ads.tiktok.com/business/creativecenter/keyword-insights/pc/en?__seojump_start&__bruteAction=input[placeholder='Search by keyword']&__text=%selectedText%"
             }
         ]
     },
@@ -18,7 +18,7 @@
         "engines": [
             {
                 "name": "Bing Incognito",
-                "url": "https://www.bing.com/search?q=%selectedText%&__ess_start&__incognito=true"
+                "url": "https://www.bing.com/search?q=%selectedText%&__seojump_start&__incognito=true"
             }
         ]
     },
@@ -31,31 +31,31 @@
             },
             {
                 "name": "DeepSeek IS",
-                "url": "https://chat.deepseek.com?__ess_start&__input=textarea#chat-input&__submit=div[role='button'][aria-disabled='false']&__text=%selectedText%"
+                "url": "https://chat.deepseek.com?__seojump_start&__input=textarea#chat-input&__submit=div[role='button'][aria-disabled='false']&__text=%selectedText%"
             },
             {
                 "name": "DeepSeek IS-t",
-                "url": "https://chat.deepseek.com?__ess_start&__input=#chat-input&__submit=div[role='button'][aria-disabled='false']&__text=%selectedText%"
+                "url": "https://chat.deepseek.com?__seojump_start&__input=#chat-input&__submit=div[role='button'][aria-disabled='false']&__text=%selectedText%"
             },
             {
                 "name": "DeepSeek BA",
-                "url": "https://chat.deepseek.com?__ess_start&__bruteAction=textarea#chat-input&__text=%selectedText%"
+                "url": "https://chat.deepseek.com?__seojump_start&__bruteAction=textarea#chat-input&__text=%selectedText%"
             },
             {
                 "name": "Poe input+submit",
-                "url": "https://poe.com?__ess_start&__input=textarea[placeholder='Start a new chat']&__submit=button[data-button-send='true']&__text=%selectedText%"
+                "url": "https://poe.com?__seojump_start&__input=textarea[placeholder='Start a new chat']&__submit=button[data-button-send='true']&__text=%selectedText%"
             },
             {
                 "name": "Poe bruteAction",
-                "url": "https://poe.com?__ess_start&__bruteAction=textarea[placeholder='Start a new chat']&__text=%selectedText%"
+                "url": "https://poe.com?__seojump_start&__bruteAction=textarea[placeholder='Start a new chat']&__text=%selectedText%"
             },
             {
                 "name": "vercel.ai bruteAction",
-                "url": "https://chat.vercel.ai/?__ess_start&__bruteAction=textarea[placeholder='Send a message...']&__text=%selectedText%"
+                "url": "https://chat.vercel.ai/?__seojump_start&__bruteAction=textarea[placeholder='Send a message...']&__text=%selectedText%"
             },
             {
                 "name": "vercel.ai input+submit",
-                "url": "https://chat.vercel.ai/?__ess_start&__input=textarea[placeholder='Send a message...']&__submit=button[class*='bg-primary']&__text=%selectedText%"
+                "url": "https://chat.vercel.ai/?__seojump_start&__input=textarea[placeholder='Send a message...']&__submit=button[class*='bg-primary']&__text=%selectedText%"
             }
         ]
     },
@@ -72,7 +72,7 @@
             },
             {
                 "name": "Google Incognito",
-                "url": "https://www.google.com/search?q=%selectedText%&ie=utf-8&oe=utf-8&__ess_start&__incognito=true"
+                "url": "https://www.google.com/search?q=%selectedText%&ie=utf-8&oe=utf-8&__seojump_start&__incognito=true"
             },
             {
                 "name": "Bing",
@@ -182,11 +182,11 @@
             },
             {
                 "name": "Similarweb bruteAction",
-                "url": "https://www.similarweb.com/generator/?__ess_start&__bruteAction=.checker-hero__search input&__text=%selectedText%"
+                "url": "https://www.similarweb.com/generator/?__seojump_start&__bruteAction=.checker-hero__search input&__text=%selectedText%"
             },
             {
                 "name": "Similarweb input+submit",
-                "url": "https://www.similarweb.com/generator/?__ess_start&__input=.checker-hero__search input&__submit=.checker-hero__search button[data-test='submit']&__text=%selectedText%"
+                "url": "https://www.similarweb.com/generator/?__seojump_start&__input=.checker-hero__search input&__submit=.checker-hero__search button[data-test='submit']&__text=%selectedText%"
             },
             {
                 "name": "Keyword Rank",
@@ -230,7 +230,7 @@
             },
             {
                 "name": "Google Keyword Planner",
-                "url": "https://ads.google.com/aw/keywordplanner/ideas/new?__ess_start&__delay=9000&__input=input[placeholder='Try &quot;meal delivery&quot; or &quot;leather boots&quot;']&__submit=.expanded-content .submit-button&__text=%selectedText%"
+                "url": "https://ads.google.com/aw/keywordplanner/ideas/new?__seojump_start&__delay=9000&__input=input[placeholder='Try &quot;meal delivery&quot; or &quot;leather boots&quot;']&__submit=.expanded-content .submit-button&__text=%selectedText%"
             }
         ]
     },

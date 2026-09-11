@@ -37,7 +37,7 @@ Supported parameters include:
 - `__bruteAction=selector`
 - `__text=%selectedText%`
 
-The historical `__ess_start` marker remains supported for backward compatibility. The refactored parser also accepts `__seojump_start` for new configurations.
+Advanced Actions use `__seojump_start` as the only action marker.
 
 Selectors can use fallbacks separated by `||`:
 

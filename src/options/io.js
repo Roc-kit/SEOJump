@@ -77,8 +77,8 @@
     download(rows.map(row => row.map(escapeCsv).join(',')).join('\n'), 'seojump-settings.csv', 'text/csv');
   };
 
-  function findHeader(headers, aliases) {
-    return headers.findIndex(header => aliases.includes(header.trim()));
+  function findHeader(headers, name) {
+    return headers.findIndex(header => header.trim() === name);
   }
 
   app.importCsv = async function importCsv(event) {
@@ -89,12 +89,12 @@
       if (rows.length < 2) throw new Error('No rows');
       const headers = rows[0];
       const columns = {
-        category: findHeader(headers, ['CategoryName', 'Category']),
-        categoryEnabled: findHeader(headers, ['CategoryEnabled']),
-        engine: findHeader(headers, ['EngineName', 'Engine Name']),
-        url: findHeader(headers, ['EngineURL', 'URL']),
-        engineEnabled: findHeader(headers, ['EngineEnabled']),
-        favicon: findHeader(headers, ['EngineFavicon', 'Favicon'])
+        category: findHeader(headers, 'CategoryName'),
+        categoryEnabled: findHeader(headers, 'CategoryEnabled'),
+        engine: findHeader(headers, 'EngineName'),
+        url: findHeader(headers, 'EngineURL'),
+        engineEnabled: findHeader(headers, 'EngineEnabled'),
+        favicon: findHeader(headers, 'EngineFavicon')
       };
       if ([columns.category, columns.engine, columns.url].some(index => index < 0)) {
         throw new Error('Required columns missing');
