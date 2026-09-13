@@ -119,6 +119,8 @@ workflowSessions[workflowId]
 │   └── title
 ├── currentStepId
 ├── completedStepIds[]
+├── stepOpenedTools
+│   └── stepId -> toolId[]
 └── stepTabs
     └── stepId
         └── toolId -> tabId
@@ -129,6 +131,8 @@ workflowSessions[workflowId]
 All Tool placeholders during that run resolve from this frozen snapshot. Opening Google, Ahrefs, Semrush, or another Tool must not replace the run Context with the newly active Tool tab.
 
 `stepTabs` is keyed by both Step and Tool because one Step may expose more than one Tool button. If the recorded tab still exists, the Side Panel focuses it instead of opening a duplicate. If it has been closed, the Tool can be opened again from the original Workflow context.
+
+`stepOpenedTools` records only whether each Tool was manually opened in the current run. When every Tool referenced by a Step has been opened at least once, the Step is automatically marked complete and the next Step becomes current. V1 does not attempt to inspect third-party page content to decide whether research was actually completed.
 
 The session remains local and contains no scraped third-party page data, screenshots, notes, or SEO metrics.
 

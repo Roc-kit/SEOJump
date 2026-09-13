@@ -26,6 +26,50 @@
     margin-bottom: 14px;
 }
 
+.workflow-settings {
+    padding: 20px 0;
+    border: 0;
+    border-top: 1px solid var(--border-color);
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+}
+
+.workflow-settings > h2 { margin-bottom: 14px; }
+.workflow-manager { display: grid; grid-template-columns: minmax(190px, 240px) minmax(0, 1fr); min-height: 440px; border: 1px solid var(--border-color); border-radius: 6px; overflow: hidden; background: var(--workspace-background-color); }
+.workflow-list-panel { display: flex; flex-direction: column; gap: 6px; padding: 10px; border-right: 1px solid var(--border-color); }
+.workflow-list { display: grid; gap: 3px; }
+.workflow-select { width: 100%; padding: 9px 10px; border: 0; border-radius: 6px; background: transparent; color: var(--text-color); text-align: left; cursor: pointer; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.workflow-select:hover { background: var(--hover-color); }
+.workflow-select.active { background: var(--primary-soft-color); color: var(--primary-color); }
+.workflow-add, .workflow-add-step { margin-top: 8px; padding: 8px 10px; border: 1px dashed var(--border-color); border-radius: 6px; background: transparent; color: var(--primary-color); cursor: pointer; }
+.workflow-add:hover, .workflow-add-step:hover { border-color: var(--primary-color); background: var(--primary-soft-color); }
+.workflow-editor { min-width: 0; padding: 16px; }
+.workflow-editor-header { display: flex; align-items: center; gap: 10px; }
+.workflow-title-input, .workflow-description-input, .workflow-step-title, .workflow-step-description, .workflow-tool-picker { border: 1px solid var(--border-color); border-radius: 5px; background: var(--background-color); color: var(--text-color); box-sizing: border-box; }
+.workflow-title-input { flex: 1; min-width: 0; padding: 8px 10px; font-size: 16px; font-weight: 600; }
+.workflow-description-input { width: 100%; margin-top: 10px; padding: 8px 10px; resize: vertical; }
+.workflow-delete { padding: 8px 10px; border: 1px solid var(--border-color); border-radius: 5px; background: var(--background-color); color: var(--text-color-secondary); cursor: pointer; }
+.workflow-steps { display: grid; gap: 10px; margin-top: 14px; }
+.workflow-step-editor { padding: 12px; border: 1px solid var(--border-color); border-radius: 7px; background: var(--background-color); }
+.workflow-step-header { display: grid; grid-template-columns: 28px minmax(0, 1fr) auto; align-items: center; gap: 8px; }
+.workflow-step-number { display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; background: var(--primary-soft-color); color: var(--primary-color); font-size: 12px; font-weight: 700; }
+.workflow-step-title { width: 100%; padding: 7px 8px; font-weight: 600; }
+.workflow-step-actions { display: flex; gap: 4px; }
+.workflow-step-actions button, .workflow-remove-tool { border: 1px solid var(--border-color); border-radius: 4px; background: transparent; color: var(--text-color-secondary); cursor: pointer; }
+.workflow-step-actions button { width: 28px; height: 28px; }
+.workflow-step-actions button:disabled { opacity: .35; cursor: default; }
+.workflow-step-description { width: 100%; margin-top: 8px; padding: 7px 8px; resize: vertical; }
+.workflow-tool-list { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 9px; }
+.workflow-tool-item { display: inline-flex; align-items: center; gap: 5px; padding: 5px 7px; border-radius: 5px; background: var(--primary-soft-color); color: var(--primary-color); font-size: 12px; }
+.workflow-remove-tool { width: 20px; height: 20px; border: 0; color: inherit; font-size: 16px; line-height: 18px; }
+.workflow-muted { color: var(--text-color-secondary); font-size: 12px; }
+.workflow-add-tool-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 7px; margin-top: 9px; }
+.workflow-tool-picker { min-width: 0; padding: 7px 8px; }
+.workflow-add-tool { padding: 7px 10px; border: 1px solid var(--border-color); border-radius: 5px; background: var(--background-color); color: var(--primary-color); cursor: pointer; }
+.workflow-empty { padding: 18px; border: 1px dashed var(--border-color); border-radius: 6px; color: var(--text-color-secondary); }
+.workflow-empty p { margin: 0; }
+
 #general-settings {
     width: 100%;
     padding: 20px 0 0;
@@ -143,6 +187,8 @@
 }
 
 @media (max-width: 620px) {
+    .workflow-manager { grid-template-columns: 1fr; }
+    .workflow-list-panel { border-right: 0; border-bottom: 1px solid var(--border-color); }
     #general-settings .settings-grid {
         grid-template-columns: 1fr;
     }

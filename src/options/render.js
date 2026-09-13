@@ -138,6 +138,7 @@
   app.renderAll = function renderAll() {
     app.renderSearchEngines();
     app.initSortable();
+    app.renderWorkflows?.();
     SEOJumpI18n.apply();
     app.setSaveStatus(state.saveStatus);
   };

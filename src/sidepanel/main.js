@@ -56,7 +56,8 @@
       context,
       currentStepId: workflow.steps[0]?.id || '',
       completedStepIds: [],
-      stepTabs: {}
+      stepTabs: {},
+      stepOpenedTools: {}
     };
   }
 
@@ -115,10 +116,11 @@
       step.tools.forEach(({ toolId }) => {
         const tool = state.tools.get(toolId);
         if (!tool) return;
+        const opened = state.session.stepOpenedTools?.[step.id]?.includes(toolId);
         const button = document.createElement('button');
-        button.className = 'tool-button';
+        button.className = `tool-button${opened ? ' opened' : ''}`;
         button.type = 'button';
-        button.textContent = tool.name;
+        button.textContent = `${opened ? '✓ ' : ''}${tool.name}`;
         button.addEventListener('click', event => {
           event.stopPropagation();
           openTool(step, tool).catch(console.error);
@@ -129,10 +131,28 @@
       item.append(heading, body);
       stepList.append(item);
     });
+  }
 
-    const currentIndex = steps.findIndex(step => step.id === state.session.currentStepId);
-    $('#done-button').disabled = currentIndex < 0;
-    $('#next-button').disabled = currentIndex < 0 || currentIndex >= steps.length - 1;
+  async function markToolOpened(step, toolId) {
+    state.session.stepOpenedTools = state.session.stepOpenedTools || {};
+    const opened = new Set(state.session.stepOpenedTools[step.id] || []);
+    opened.add(toolId);
+    state.session.stepOpenedTools[step.id] = [...opened];
+
+    const required = (step.tools || []).map(item => item.toolId).filter(Boolean);
+    const complete = required.length > 0 && required.every(id => opened.has(id));
+    if (complete && !state.session.completedStepIds.includes(step.id)) {
+      state.session.completedStepIds.push(step.id);
+    }
+    if (complete && state.session.currentStepId === step.id) {
+      const steps = sortedSteps();
+      const index = steps.findIndex(item => item.id === step.id);
+      if (index >= 0 && index < steps.length - 1) {
+        state.session.currentStepId = steps[index + 1].id;
+      }
+    }
+    await saveSession();
+    renderSteps();
   }
 
   async function focusTab(tabId) {
@@ -162,7 +182,7 @@
     state.session.currentStepId = step.id;
     const savedTabId = state.session.stepTabs?.[step.id]?.[tool.id];
     if (await focusTab(savedTabId)) {
-      renderSteps();
+      await markToolOpened(step, tool.id);
       return;
     }
 
@@ -181,8 +201,7 @@
     state.session.stepTabs = state.session.stepTabs || {};
     state.session.stepTabs[step.id] = state.session.stepTabs[step.id] || {};
     if (response.tabId) state.session.stepTabs[step.id][tool.id] = response.tabId;
-    await saveSession();
-    renderSteps();
+    await markToolOpened(step, tool.id);
   }
 
   async function chooseWorkflow(id) {
@@ -194,18 +213,6 @@
     $('#workflow-title').textContent = workflow.title;
     $('#workflow-description').textContent = workflow.description || '';
     renderContext();
-    renderSteps();
-  }
-
-  async function advance(markDone) {
-    const steps = sortedSteps();
-    const index = steps.findIndex(step => step.id === state.session.currentStepId);
-    if (index < 0) return;
-    if (markDone && !state.session.completedStepIds.includes(steps[index].id)) {
-      state.session.completedStepIds.push(steps[index].id);
-    }
-    if (index < steps.length - 1) state.session.currentStepId = steps[index + 1].id;
-    await saveSession();
     renderSteps();
   }
 
@@ -237,8 +244,6 @@
     await loadSession(state.workflow, true);
     renderContext();
   });
-  $('#done-button').addEventListener('click', () => advance(true));
-  $('#next-button').addEventListener('click', () => advance(false));
   chrome.storage.onChanged.addListener((changes, area) => {
     if (area === 'local' && (changes.workflows || changes.searchEngines)) {
       initialize().catch(console.error);

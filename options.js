@@ -142,10 +142,11 @@
 
   document.addEventListener('DOMContentLoaded', async () => {
     try {
-      await Promise.all([app.loadEngines(), SEOJumpI18n.initialize()]);
+      await Promise.all([app.loadEngines(), app.loadWorkflows(), SEOJumpI18n.initialize()]);
       document.title = SEOJumpI18n.t('optionsTitle');
       await bindPreferenceControls();
       app.renderAll();
+      app.bindWorkflowEditor();
 
       document.getElementById('exportBtn').addEventListener('click', app.showExportDialog);
       document.getElementById('importBtn').addEventListener('click', app.showImportDialog);
