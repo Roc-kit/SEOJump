@@ -7,6 +7,25 @@
     await chrome.contextMenus.removeAll();
     if (!Array.isArray(settings)) return;
 
+    chrome.contextMenus.create({
+      id: 'seojump_root',
+      title: 'SEOJump',
+      contexts: ['all']
+    });
+
+    chrome.contextMenus.create({
+      id: 'open_workflow_panel',
+      parentId: 'seojump_root',
+      title: 'Open Workflow Panel',
+      contexts: ['all']
+    });
+    chrome.contextMenus.create({
+      id: 'workflow_separator',
+      parentId: 'seojump_root',
+      type: 'separator',
+      contexts: ['selection']
+    });
+
     for (const [categoryIndex, category] of settings.entries()) {
       if (category.disable || !Array.isArray(category.engines) || !category.engines.length) continue;
       const enabledEngines = category.engines
@@ -17,6 +36,7 @@
       const categoryId = `category_${categoryIndex}`;
       chrome.contextMenus.create({
         id: categoryId,
+        parentId: 'seojump_root',
         title: category.name || 'Unnamed Category',
         contexts: ['selection']
       });
@@ -52,6 +72,14 @@
 
   app.handleContextMenuClick = async function handleContextMenuClick(info, tab) {
     const menuItemId = String(info.menuItemId || '');
+    if (menuItemId === 'open_workflow_panel') {
+      if (!tab?.id) return;
+      await app.openWorkflowPanel(tab, {
+        selectedText: info.selectionText || '',
+        useRecentSelection: false
+      });
+      return;
+    }
     const match = menuItemId.match(/^category_(\d+)_engine_(\d+)$/);
     if (!match) return;
 

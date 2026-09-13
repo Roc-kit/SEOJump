@@ -110,10 +110,12 @@ The definition above describes what the Workflow **is**. The Side Panel stores s
 
 ```text
 workflowSessions[workflowId]
+├── runId
 ├── context
 │   ├── selectedText
 │   ├── currentUrl
 │   ├── currentDomain
+│   ├── sourceTabId
 │   └── title
 ├── currentStepId
 ├── completedStepIds[]
@@ -122,9 +124,27 @@ workflowSessions[workflowId]
         └── toolId -> tabId
 ```
 
+`runId` identifies one concrete Workflow run. Starting a Workflow again from a source page creates a new `runId` and freezes a new Context snapshot. The Workflow definition is reused; progress from the previous run is not treated as the new run's progress.
+
+All Tool placeholders during that run resolve from this frozen snapshot. Opening Google, Ahrefs, Semrush, or another Tool must not replace the run Context with the newly active Tool tab.
+
 `stepTabs` is keyed by both Step and Tool because one Step may expose more than one Tool button. If the recorded tab still exists, the Side Panel focuses it instead of opening a duplicate. If it has been closed, the Tool can be opened again from the original Workflow context.
 
 The session remains local and contains no scraped third-party page data, screenshots, notes, or SEO metrics.
+
+## Launch context
+
+Workflow Context is captured when the user starts the Workflow, not by following whichever Tool tab happens to be active later.
+
+V1 launch paths are:
+
+```text
+Selected text -> right-click -> SEOJump -> Open Workflow Panel
+Extension popup -> Open Workflow Panel
+Chrome command -> Open Workflow Panel
+```
+
+The right-click path uses Chrome's `selectionText` plus the source tab URL. Popup and command launches use the live selection when available and can fall back to the most recently cached selection from the same source tab/page. The Chrome command is intentionally left without a default key so the user can assign one in `chrome://extensions/shortcuts` without SEOJump taking over another common shortcut.
 
 ## Tool ID prerequisite
 

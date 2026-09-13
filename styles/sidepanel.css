@@ -25,10 +25,11 @@ a { color: inherit; }
 .empty-state a { color: var(--green); font-weight: 700; }
 .context-card { margin-top: 18px; padding: 14px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
 .section-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-.context-card strong, .context-card span, .context-card small { display: block; overflow-wrap: anywhere; }
-.context-card strong { margin-top: 10px; font-size: 15px; }
-.context-card span { margin-top: 4px; color: var(--green-dark); }
-.context-card small { margin-top: 4px; color: var(--muted); }
+.context-value { display: grid; gap: 3px; margin-top: 10px; }
+.context-value > span { color: var(--muted); font-size: 10px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
+.context-value strong, .context-value small { min-width: 0; overflow-wrap: anywhere; }
+.context-value strong { color: var(--green-dark); font-size: 14px; }
+.context-value small { color: var(--muted); font-size: 11px; }
 .text-button { border: 0; padding: 0; background: transparent; color: var(--green); cursor: pointer; }
 .workflow-summary { padding: 22px 2px 12px; }
 .workflow-summary h2 { margin: 0; font-size: 22px; letter-spacing: -.025em; }

@@ -3,7 +3,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     document.getElementById('workflowPanelLink').addEventListener('click', async () => {
         const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-        if (tab?.id) await chrome.sidePanel.open({ tabId: tab.id });
+        if (tab?.id) {
+            const response = await chrome.runtime.sendMessage({ type: 'openWorkflowPanel', tabId: tab.id });
+            if (!response?.success) return;
+        }
         window.close();
     });
 

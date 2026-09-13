@@ -65,6 +65,7 @@
 
   function handleMouseUp(event) {
     app.handleTextSelection(event);
+    cacheWorkflowSelection(event);
     state.selectionStartedWithModifier = false;
   }
 
@@ -79,6 +80,24 @@
       return;
     }
     app.handleTextSelection(event);
+    cacheWorkflowSelection(event);
+  }
+
+  function cacheWorkflowSelection(event) {
+    const selectedText = app.getSelectionText(event);
+    if (!selectedText) {
+      chrome.runtime.sendMessage({ type: 'clearWorkflowSelection' }).catch(() => {});
+      return;
+    }
+    chrome.runtime.sendMessage({
+      type: 'cacheWorkflowSelection',
+      context: {
+        selectedText,
+        currentUrl: location.href,
+        currentDomain: location.hostname,
+        title: document.title
+      }
+    }).catch(() => {});
   }
 
   function enableAllowCopy() {

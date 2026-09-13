@@ -1,6 +1,7 @@
 (() => {
   const SESSION_KEY = 'workflowSessions';
   const ACTIVE_KEY = 'activeWorkflowId';
+  const LAUNCH_KEY = 'workflowLaunch';
   const state = {
     workflows: [],
     tools: new Map(),
@@ -44,19 +45,35 @@
     await chrome.storage.local.set({ [SESSION_KEY]: sessions, [ACTIVE_KEY]: state.workflow.id });
   }
 
+  async function readLaunch() {
+    const stored = await chrome.storage.session.get(LAUNCH_KEY);
+    return stored[LAUNCH_KEY] && typeof stored[LAUNCH_KEY] === 'object' ? stored[LAUNCH_KEY] : null;
+  }
+
+  function createSession(workflow, context, runId = '') {
+    return {
+      runId,
+      context,
+      currentStepId: workflow.steps[0]?.id || '',
+      completedStepIds: [],
+      stepTabs: {}
+    };
+  }
+
   async function loadSession(workflow, refreshContext = false) {
     const stored = await chrome.storage.local.get(SESSION_KEY);
     const sessions = stored[SESSION_KEY] && typeof stored[SESSION_KEY] === 'object' ? stored[SESSION_KEY] : {};
     let session = sessions[workflow.id];
-    if (!session) {
-      session = {
-        context: await readPageContext(),
-        currentStepId: workflow.steps[0]?.id || '',
-        completedStepIds: [],
-        stepTabs: {}
-      };
-    } else if (refreshContext) {
-      session.context = await readPageContext();
+    const launch = await readLaunch();
+    if (refreshContext) {
+      const context = await readPageContext();
+      const newLaunch = { runId: crypto.randomUUID(), context, capturedAt: Date.now() };
+      await chrome.storage.session.set({ [LAUNCH_KEY]: newLaunch });
+      session = createSession(workflow, context, newLaunch.runId);
+    } else if (launch?.runId && session?.runId !== launch.runId) {
+      session = createSession(workflow, launch.context || await readPageContext(), launch.runId);
+    } else if (!session) {
+      session = createSession(workflow, launch?.context || await readPageContext(), launch?.runId || '');
     }
     state.session = session;
     await saveSession();
@@ -64,9 +81,9 @@
 
   function renderContext() {
     const context = state.session?.context || {};
-    $('#context-keyword').textContent = context.selectedText ? `“${context.selectedText}”` : (context.title || 'Current page');
-    $('#context-domain').textContent = context.currentDomain || '';
-    $('#context-url').textContent = context.currentUrl || '';
+    $('#context-keyword').textContent = context.selectedText || '—';
+    $('#context-domain').textContent = context.currentDomain || '—';
+    $('#context-url').textContent = context.currentUrl || '—';
   }
 
   function sortedSteps() {
@@ -223,8 +240,13 @@
   $('#done-button').addEventListener('click', () => advance(true));
   $('#next-button').addEventListener('click', () => advance(false));
   chrome.storage.onChanged.addListener((changes, area) => {
-    if (area !== 'local') return;
-    if (changes.workflows || changes.searchEngines) initialize().catch(console.error);
+    if (area === 'local' && (changes.workflows || changes.searchEngines)) {
+      initialize().catch(console.error);
+      return;
+    }
+    if (area === 'session' && changes[LAUNCH_KEY] && state.workflow) {
+      chooseWorkflow(state.workflow.id).catch(console.error);
+    }
   });
 
   initialize().catch(console.error);

@@ -1,6 +1,7 @@
 importScripts(
   'src/shared/settings.js',
   'src/background/search.js',
+  'src/background/workflow.js',
   'src/background/context-menu.js',
   'src/background/favicon.js'
 );
@@ -87,6 +88,17 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
   });
 });
 
+chrome.commands.onCommand.addListener(async command => {
+  if (command !== 'open-workflow-panel') return;
+  const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+  if (!tab?.id) return;
+  try {
+    await app.openWorkflowPanel(tab);
+  } catch (error) {
+    console.error('[SEOJump] Failed to open workflow panel:', error);
+  }
+});
+
 chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
   if (message.action === 'openOptionsPage') {
     chrome.runtime.openOptionsPage();
@@ -103,6 +115,28 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
 
   if (message.type === 'getFavicon') {
     app.handleFaviconRequest(message.domain).then(sendResponse);
+    return true;
+  }
+
+  if (message.type === 'cacheWorkflowSelection') {
+    app.cacheWorkflowSelection(message.context, _sender.tab)
+      .then(() => sendResponse({ success: true }))
+      .catch(error => sendResponse({ success: false, error: error.message }));
+    return true;
+  }
+
+  if (message.type === 'clearWorkflowSelection') {
+    app.clearWorkflowSelection(_sender.tab)
+      .then(() => sendResponse({ success: true }))
+      .catch(error => sendResponse({ success: false, error: error.message }));
+    return true;
+  }
+
+  if (message.type === 'openWorkflowPanel') {
+    chrome.tabs.get(message.tabId)
+      .then(tab => app.openWorkflowPanel(tab))
+      .then(launch => sendResponse({ success: true, launch }))
+      .catch(error => sendResponse({ success: false, error: error.message }));
     return true;
   }
 

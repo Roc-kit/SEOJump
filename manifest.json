@@ -55,6 +55,11 @@
   "side_panel": {
     "default_path": "sidepanel.html"
   },
+  "commands": {
+    "open-workflow-panel": {
+      "description": "Open SEOJump Workflow Panel"
+    }
+  },
   "options_ui": {
     "page": "options.html",
     "open_in_tab": true
