@@ -1,14 +1,15 @@
 document.addEventListener('DOMContentLoaded', async () => {
+    const sourceTabPromise = chrome.tabs.query({ active: true, currentWindow: true });
     await SEOJumpI18n.initialize();
+    const [sourceTab] = await sourceTabPromise;
 
     document.getElementById('workflowPanelLink').addEventListener('click', async () => {
-        const openPromise = chrome.sidePanel.open({ windowId: chrome.windows.WINDOW_ID_CURRENT });
-        const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-        if (tab?.id) {
-            const response = await chrome.runtime.sendMessage({ type: 'prepareWorkflowLaunch', tabId: tab.id });
+        if (sourceTab?.id) {
+            const openPromise = chrome.sidePanel.open({ tabId: sourceTab.id });
+            const response = await chrome.runtime.sendMessage({ type: 'prepareWorkflowLaunch', tabId: sourceTab.id });
             if (!response?.success) return;
+            await openPromise;
         }
-        await openPromise;
         window.close();
     });
 
