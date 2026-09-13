@@ -113,6 +113,16 @@
       sendResponse({ success: true });
       return false;
     }
+    if (message.type === 'getPageContext') {
+      sendResponse({
+        success: true,
+        selectedText: app.getSelectionText(),
+        currentUrl: location.href,
+        currentDomain: location.hostname,
+        title: document.title
+      });
+      return false;
+    }
     return false;
   });
 

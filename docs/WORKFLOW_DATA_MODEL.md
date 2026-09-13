@@ -106,16 +106,25 @@ No separate node graph, transition table, condition language, executor type, or 
 
 Workflow definition and Workflow session state must not be mixed.
 
-The definition above describes what the Workflow **is**. A future Side Panel session may separately store only:
+The definition above describes what the Workflow **is**. The Side Panel stores session state separately under `workflowSessions`:
 
 ```text
-workflowId
-current context
-current step / completed steps
-Step <-> Tab mapping
+workflowSessions[workflowId]
+├── context
+│   ├── selectedText
+│   ├── currentUrl
+│   ├── currentDomain
+│   └── title
+├── currentStepId
+├── completedStepIds[]
+└── stepTabs
+    └── stepId
+        └── toolId -> tabId
 ```
 
-That session structure is intentionally outside Step 3 and should be defined only when the Side Panel prototype is implemented.
+`stepTabs` is keyed by both Step and Tool because one Step may expose more than one Tool button. If the recorded tab still exists, the Side Panel focuses it instead of opening a duplicate. If it has been closed, the Tool can be opened again from the original Workflow context.
+
+The session remains local and contains no scraped third-party page data, screenshots, notes, or SEO metrics.
 
 ## Tool ID prerequisite
 
@@ -137,9 +146,6 @@ Step 3 only fixes this contract. It intentionally does not perform a bulk Tool-I
 - Official Starter Workflow contents and names;
 - Workflow import/install from the website;
 - Tool ID migration/generation implementation;
-- Side Panel rendering;
-- Workflow progress persistence;
-- Step <-> Tab mapping;
 - Guide URLs or screenshots;
 - Notes and structured research fields;
 - DOM/data extraction from third-party pages;

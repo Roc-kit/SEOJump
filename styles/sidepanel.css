@@ -1,0 +1,53 @@
+:root {
+  color-scheme: light;
+  --bg: #f7f5ee;
+  --surface: #fcfbf7;
+  --ink: #1e211c;
+  --muted: #70756d;
+  --line: #dddcd4;
+  --green: #315c45;
+  --green-dark: #274b38;
+  --green-soft: #e7eee7;
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 14px/1.5 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+button, select { font: inherit; }
+a { color: inherit; }
+.panel-shell { width: 100%; max-width: 520px; min-height: 100vh; margin: 0 auto; padding: 20px 16px 24px; }
+.panel-header { display: flex; align-items: end; justify-content: space-between; gap: 16px; padding-bottom: 18px; border-bottom: 1px solid var(--line); }
+.eyebrow, .section-label { color: var(--green); font-size: 10px; font-weight: 800; letter-spacing: .09em; text-transform: uppercase; }
+.panel-header h1 { margin: 2px 0 0; font-size: 26px; letter-spacing: -.03em; }
+.panel-header select { max-width: 52%; min-width: 130px; border: 1px solid var(--line); border-radius: 8px; padding: 8px 9px; background: var(--surface); color: var(--ink); }
+.empty-state { margin-top: 28px; padding: 24px; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); }
+.empty-state h2 { margin: 0; font-size: 20px; }
+.empty-state p { color: var(--muted); }
+.empty-state a { color: var(--green); font-weight: 700; }
+.context-card { margin-top: 18px; padding: 14px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
+.section-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.context-card strong, .context-card span, .context-card small { display: block; overflow-wrap: anywhere; }
+.context-card strong { margin-top: 10px; font-size: 15px; }
+.context-card span { margin-top: 4px; color: var(--green-dark); }
+.context-card small { margin-top: 4px; color: var(--muted); }
+.text-button { border: 0; padding: 0; background: transparent; color: var(--green); cursor: pointer; }
+.workflow-summary { padding: 22px 2px 12px; }
+.workflow-summary h2 { margin: 0; font-size: 22px; letter-spacing: -.025em; }
+.workflow-summary p { margin: 7px 0 0; color: var(--muted); }
+.step-list { display: grid; gap: 9px; margin: 0; padding: 0; list-style: none; }
+.step-card { border: 1px solid var(--line); border-radius: 12px; background: rgba(252,251,247,.72); overflow: hidden; }
+.step-card.current { border-color: #aebdaf; background: var(--surface); box-shadow: 0 0 0 2px rgba(49,92,69,.06); }
+.step-card.completed .step-number { background: var(--green); color: white; }
+.step-heading { width: 100%; display: grid; grid-template-columns: 30px 1fr auto; align-items: center; gap: 10px; border: 0; padding: 13px; background: transparent; color: inherit; text-align: left; cursor: pointer; }
+.step-number { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: var(--green-soft); color: var(--green-dark); font-size: 12px; font-weight: 800; }
+.step-title { font-weight: 750; }
+.step-state { color: var(--muted); font-size: 11px; }
+.step-body { padding: 0 13px 14px 53px; }
+.step-body p { margin: 0 0 11px; color: var(--muted); }
+.tool-row { display: flex; flex-wrap: wrap; gap: 7px; }
+.tool-button { border: 1px solid var(--line); border-radius: 8px; padding: 7px 9px; background: var(--surface); color: var(--ink); cursor: pointer; }
+.tool-button:hover { border-color: #aebdaf; color: var(--green-dark); }
+.panel-footer { position: sticky; bottom: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 9px; margin-top: 16px; padding: 12px 0 4px; background: linear-gradient(to bottom, rgba(247,245,238,0), var(--bg) 24%); }
+.primary-button, .secondary-button { border-radius: 9px; padding: 10px 12px; cursor: pointer; }
+.primary-button { border: 1px solid var(--green); background: var(--green); color: white; }
+.secondary-button { border: 1px solid var(--line); background: var(--surface); color: var(--ink); }
+button:disabled { opacity: .5; cursor: default; }

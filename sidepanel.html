@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SEOJump Workflow</title>
+  <link rel="stylesheet" href="styles/sidepanel.css">
+</head>
+<body>
+  <main class="panel-shell">
+    <header class="panel-header">
+      <div>
+        <span class="eyebrow">SEOJump</span>
+        <h1>Workflow</h1>
+      </div>
+      <select id="workflow-select" aria-label="Workflow"></select>
+    </header>
+
+    <section id="empty-state" class="empty-state" hidden>
+      <h2>No workflows yet</h2>
+      <p>Add a starter workflow from the SEOJump website.</p>
+      <a href="https://searchengines.cc/workflows" target="_blank" rel="noreferrer">Browse Workflows</a>
+    </section>
+
+    <div id="workflow-view" hidden>
+      <section class="context-card">
+        <div class="section-row">
+          <span class="section-label">Context</span>
+          <button id="refresh-context" class="text-button" type="button">Refresh</button>
+        </div>
+        <strong id="context-keyword"></strong>
+        <span id="context-domain"></span>
+        <small id="context-url"></small>
+      </section>
+
+      <section class="workflow-summary">
+        <h2 id="workflow-title"></h2>
+        <p id="workflow-description"></p>
+      </section>
+
+      <ol id="step-list" class="step-list"></ol>
+
+      <footer class="panel-footer">
+        <button id="done-button" class="primary-button" type="button">Done</button>
+        <button id="next-button" class="secondary-button" type="button">Next</button>
+      </footer>
+    </div>
+  </main>
+  <script src="src/sidepanel/main.js"></script>
+</body>
+</html>

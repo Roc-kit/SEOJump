@@ -96,7 +96,7 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
 
   if (message.type === 'performSearch') {
     app.handleSearch(message.url, message.text, message.context, message.inBackground)
-      .then(() => sendResponse({ success: true }))
+      .then(result => sendResponse({ success: true, tabId: result?.tabId || null }))
       .catch(error => sendResponse({ success: false, error: error.message }));
     return true;
   }

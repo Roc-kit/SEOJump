@@ -113,18 +113,18 @@
     const actionText = app.processPlaceholders(special.text || text, text, context);
 
     if (special.incognito) {
-      await chrome.windows.create({
+      const created = await chrome.windows.create({
         url: targetUrl,
         incognito: true,
         focused: !inBackground,
         state: 'maximized'
       });
-      return;
+      return { tabId: created.tabs?.[0]?.id || null };
     }
 
     if (special.newWindow) {
-      await chrome.windows.create({ url: targetUrl, focused: !inBackground });
-      return;
+      const created = await chrome.windows.create({ url: targetUrl, focused: !inBackground });
+      return { tabId: created.tabs?.[0]?.id || null };
     }
 
     const currentWindow = await chrome.windows.getCurrent();
@@ -136,12 +136,13 @@
 
     const needsDomAction = special.hasAdvanced &&
       (special.inputSelector || special.submitSelector || special.bruteSelector || special.delay);
-    if (!needsDomAction || !tab.id) return;
+    if (!needsDomAction || !tab.id) return { tabId: tab.id || null };
 
     try {
       await runAdvancedAction(tab.id, { ...special, text: actionText });
     } catch (error) {
       console.warn('[SEOJump] Advanced Action failed:', error);
     }
+    return { tabId: tab.id || null };
   };
 })();
