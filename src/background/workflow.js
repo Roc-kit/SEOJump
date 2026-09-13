@@ -82,8 +82,10 @@
   };
 
   app.openWorkflowPanel = async function openWorkflowPanel(tab, options = {}) {
+    if (!tab?.id) throw new Error('No active tab available.');
+    const openPromise = chrome.sidePanel.open({ tabId: tab.id });
     const launch = await app.prepareWorkflowLaunch(tab, options);
-    await chrome.sidePanel.open({ tabId: tab.id });
+    await openPromise;
     return launch;
   };
 })();

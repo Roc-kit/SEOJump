@@ -90,10 +90,12 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
 
 chrome.commands.onCommand.addListener(async command => {
   if (command !== 'open-workflow-panel') return;
+  const openPromise = chrome.sidePanel.open({ windowId: chrome.windows.WINDOW_ID_CURRENT });
   const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
   if (!tab?.id) return;
   try {
-    await app.openWorkflowPanel(tab);
+    await app.prepareWorkflowLaunch(tab);
+    await openPromise;
   } catch (error) {
     console.error('[SEOJump] Failed to open workflow panel:', error);
   }
@@ -132,9 +134,9 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
     return true;
   }
 
-  if (message.type === 'openWorkflowPanel') {
+  if (message.type === 'prepareWorkflowLaunch') {
     chrome.tabs.get(message.tabId)
-      .then(tab => app.openWorkflowPanel(tab))
+      .then(tab => app.prepareWorkflowLaunch(tab))
       .then(launch => sendResponse({ success: true, launch }))
       .catch(error => sendResponse({ success: false, error: error.message }));
     return true;

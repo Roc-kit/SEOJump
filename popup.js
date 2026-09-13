@@ -2,11 +2,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     await SEOJumpI18n.initialize();
 
     document.getElementById('workflowPanelLink').addEventListener('click', async () => {
+        const openPromise = chrome.sidePanel.open({ windowId: chrome.windows.WINDOW_ID_CURRENT });
         const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
         if (tab?.id) {
-            const response = await chrome.runtime.sendMessage({ type: 'openWorkflowPanel', tabId: tab.id });
+            const response = await chrome.runtime.sendMessage({ type: 'prepareWorkflowLaunch', tabId: tab.id });
             if (!response?.success) return;
         }
+        await openPromise;
         window.close();
     });
 
