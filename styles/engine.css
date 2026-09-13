@@ -36,7 +36,7 @@
 }
 
 .category-tool-count {
-    color: #7c879b;
+    color: var(--text-color-secondary);
     font-size: 12px;
     font-weight: 500;
 }
@@ -163,7 +163,7 @@
 }
 
 .category-header .category-meta {
-    color: #7c879b;
+    color: var(--text-color-secondary);
     font-size: 12px;
     white-space: nowrap;
 }
@@ -202,7 +202,7 @@
 .engine-url {
     width: 100%;
     min-width: 0;
-    color: #667085;
+    color: var(--text-color-secondary);
 }
 
 .engine-url {
@@ -215,7 +215,7 @@
     border: 1px solid transparent;
     border-radius: 4px;
     background: transparent;
-    color: #687083;
+    color: var(--text-color-secondary);
     cursor: pointer;
     font-size: 16px;
     line-height: 1;
@@ -224,7 +224,7 @@
 .edit-engine-url:hover {
     color: var(--primary-color);
     border-color: var(--border-color);
-    background: white;
+    background: var(--background-color);
 }
 
 .switch {

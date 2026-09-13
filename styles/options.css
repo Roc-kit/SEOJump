@@ -1,5 +1,5 @@
 .toolbar {
-    background: white;
+    background: var(--background-color);
     border: 1px solid var(--border-color);
     border-radius: 6px;
     padding: 20px;
@@ -66,7 +66,7 @@
     display: flex;
     align-items: center;
     padding: 18px 0;
-    color: #333;
+    color: var(--text-color);
     font-size: 18px;
     font-weight: 600;
     cursor: pointer;
@@ -81,7 +81,7 @@
 .placeholder-summary::after {
     content: '›';
     margin-left: auto;
-    color: #7c879b;
+    color: var(--text-color-secondary);
     font-size: 24px;
     font-weight: 400;
     transform: rotate(90deg);
@@ -117,7 +117,7 @@
     padding: 0 18px;
     border: 1px solid var(--border-color);
     border-radius: 6px;
-    background: white;
+    background: var(--background-color);
     color: var(--text-color);
     cursor: pointer;
     transition: all 0.15s ease;
@@ -132,8 +132,8 @@
 .page-actions .reset-action {
     min-width: 120px;
     border-color: var(--border-color);
-    background: white;
-    color: #7c879b;
+    background: var(--background-color);
+    color: var(--text-color-secondary);
 }
 
 .page-actions .reset-action:hover {
