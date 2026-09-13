@@ -2,6 +2,8 @@
 
 日期：2026-09-13
 
+> 归档说明：2026-09-13 后，Growth System 已从扩展仓库迁移为同级独立目录 `/home/cislunar/App/SEOJump/growth/`，其中包含 Growth Skill。本文下方出现的旧 `SEOJump/growth/` 路径仅记录当时状态。
+
 ## 1. 当前项目定位
 
 SEOJump 现阶段仍然是一个轻量 Chrome 扩展，不是 SEO Agent，也不是 SEO 数据平台。
