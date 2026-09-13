@@ -66,7 +66,8 @@
 .workflow-muted { color: var(--text-color-secondary); font-size: 12px; }
 .workflow-add-tool-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 7px; margin-top: 9px; }
 .workflow-tool-picker { min-width: 0; padding: 7px 8px; }
-.workflow-add-tool { padding: 7px 10px; border: 1px solid var(--border-color); border-radius: 5px; background: var(--background-color); color: var(--primary-color); cursor: pointer; }
+.workflow-custom-tool { padding: 7px 10px; border: 1px solid var(--border-color); border-radius: 5px; background: var(--background-color); color: var(--primary-color); cursor: pointer; white-space: nowrap; }
+.workflow-custom-tool:hover { border-color: var(--primary-color); background: var(--primary-soft-color); }
 .workflow-empty { padding: 18px; border: 1px dashed var(--border-color); border-radius: 6px; color: var(--text-color-secondary); }
 .workflow-empty p { margin: 0; }
 
@@ -84,6 +85,44 @@
 
 #general-settings h2 {
     margin-bottom: 14px;
+}
+
+.workflow-copy-note {
+    margin: -6px 0 12px;
+    color: var(--text-color-secondary);
+    font-size: 12px;
+}
+
+.workflow-tool-modal {
+    max-width: 660px;
+}
+
+.workflow-tool-modal-name {
+    display: block;
+    width: calc(100% - 20px);
+    margin: 0 auto 12px;
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background: var(--input-background);
+    color: var(--text-color);
+}
+
+.workflow-tool-modal-name:focus {
+    border-color: var(--primary-color);
+    outline: 2px solid var(--primary-soft-color);
+}
+
+.workflow-edit-tool {
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+}
+
+.workflow-edit-tool:hover {
+    color: var(--primary-color);
 }
 
 #general-settings .settings-grid {

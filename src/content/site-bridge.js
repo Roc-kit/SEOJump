@@ -102,29 +102,34 @@
   }
 
   async function addWorkflow(workflow, tools) {
-    const categories = await app.loadEngines();
-    if (!Array.isArray(categories)) throw new Error('Unable to load SEOJump tools.');
-
     const requiredToolIds = new Set(workflow.steps.flatMap(step => step.tools.map(item => item.toolId)));
     const normalizedTools = tools.map(normalizeTool).filter(Boolean);
     if ([...requiredToolIds].some(toolId => !normalizedTools.some(tool => tool.id === toolId))) {
       throw new Error('Workflow is missing a required tool.');
     }
 
-    let toolsChanged = false;
-    normalizedTools.forEach(tool => {
-      toolsChanged = ensureTool(categories, tool) || toolsChanged;
-    });
+    const toolMap = new Map(normalizedTools.map(tool => [tool.id, tool]));
+    const storedWorkflow = {
+      ...workflow,
+      steps: workflow.steps.map(step => ({
+        ...step,
+        tools: step.tools.map(({ toolId }) => {
+          const tool = toolMap.get(toolId);
+          return {
+            id: tool.id,
+            name: tool.name,
+            url: tool.url
+          };
+        })
+      }))
+    };
 
     const stored = await chrome.storage.local.get('workflows');
     const workflows = Array.isArray(stored.workflows) ? stored.workflows : [];
     const exists = workflows.some(item => item?.id === workflow.id);
-    if (!exists) workflows.push(workflow);
+    if (!exists) workflows.push(storedWorkflow);
 
-    const update = {};
-    if (toolsChanged) update.searchEngines = categories;
-    if (!exists) update.workflows = workflows;
-    if (Object.keys(update).length) await chrome.storage.local.set(update);
+    if (!exists) await chrome.storage.local.set({ workflows });
     return { status: exists ? 'exists' : 'added' };
   }
 

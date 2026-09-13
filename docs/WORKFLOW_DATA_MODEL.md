@@ -32,8 +32,10 @@ Workflow
         ├── description
         ├── order
         └── tools[]
-            └── ToolReference
-                └── toolId
+            └── WorkflowTool
+                ├── id
+                ├── name
+                └── url
 ```
 
 Minimal JSON shape:
@@ -51,7 +53,9 @@ Minimal JSON shape:
       "order": 10,
       "tools": [
         {
-          "toolId": "example-tool"
+          "id": "workflow-tool:example",
+          "name": "Google Search",
+          "url": "https://www.google.com/search?q=%selectedText%"
         }
       ]
     }
@@ -74,13 +78,15 @@ Minimal JSON shape:
 - `title`: short step label.
 - `description`: tells the user why the step exists and/or what to observe after opening a Tool.
 - `order`: integer used for explicit user-controlled ordering. Gaps such as `10, 20, 30` are allowed.
-- `tools`: one or more Tool references. Their array order is the button/display order inside the Step.
+- `tools`: zero or more Workflow Tool copies. Their array order is the button/display order inside the Step.
 
-### ToolReference
+### WorkflowTool
 
-- `toolId`: stable reference to a Tool already available in SEOJump.
-- Do not copy Tool name, URL, favicon, category, selector, or other Tool implementation fields into a Workflow.
-- Replacing a Tool means replacing `toolId`; the Step itself does not need to change.
+- `id`: internal identifier used only inside Workflow runtime state and tab tracking.
+- `name`: user-visible Tool name stored in the Workflow itself.
+- `url`: URL template stored in the Workflow itself. It may use `%selectedText%`, `%currentUrl%`, and `%currentDomain%`.
+- Search Tools and Workflow Tools are deliberately independent. Importing from Search Tools copies `name + url`; later edits on either side do not synchronize.
+- A Workflow may also contain a custom Tool that never appears in Search Tools, the selection toolbar, or the right-click Tool menu.
 
 ## Customization requirements
 
@@ -94,9 +100,9 @@ Add Step          -> add Step object
 Delete Step       -> remove Step object
 Reorder Step      -> change order
 Edit guidance     -> change title / description
-Add Tool          -> add ToolReference
-Remove Tool       -> remove ToolReference
-Replace Tool      -> replace toolId
+Add Tool          -> copy from Search Tools or create WorkflowTool
+Edit Tool         -> edit WorkflowTool name / url
+Remove Tool       -> remove WorkflowTool
 Reorder Tools     -> reorder tools[]
 ```
 
@@ -150,26 +156,26 @@ Chrome command -> Open Workflow Panel
 
 The right-click path uses Chrome's `selectionText` plus the source tab URL. Popup and command launches use the live selection when available and can fall back to the most recently cached selection from the same source tab/page. The Chrome command is intentionally left without a default key so the user can assign one in `chrome://extensions/shortcuts` without SEOJump taking over another common shortcut.
 
-## Tool ID prerequisite
+## Search Tools are not a dependency
 
-Current SEOJump Tool objects do not yet have stable IDs; they are effectively identified by mutable names/URLs and array positions.
+Search Tools are the user's Quick Jump configuration. Workflows are self-contained task templates. A Workflow can import a Search Tool as a convenience, but import is a copy operation rather than a reference.
 
-Workflows must **not** reference a Tool by:
+```text
+Search Tools                       Workflow
+Google + URL  ── import/copy ──>  Google + URL
 
-- category index;
-- tool index;
-- display name;
-- URL template.
+later edit Search Tools URL       no automatic change
+later edit Workflow URL           no automatic change
+```
 
-Before a Workflow is executed in the extension, Tools need a stable `id` field so `ToolReference.toolId` remains valid after rename, reorder, URL edits, or category moves.
+This keeps Workflow installation from polluting the Quick Jump toolbar and prevents a later toolbar edit from silently changing a previously tested Workflow.
 
-Step 3 only fixes this contract. It intentionally does not perform a bulk Tool-ID migration or change existing toolbar behavior.
+Existing V1 `toolId` references are migrated to embedded Workflow Tools when the Options page can resolve the old Tool from Search Tools. The Side Panel retains a small legacy lookup fallback only so an older stored Workflow can still run before that migration occurs.
 
 ## Explicitly deferred
 
 - Official Starter Workflow contents and names;
 - Workflow import/install from the website;
-- Tool ID migration/generation implementation;
 - Guide URLs or screenshots;
 - Notes and structured research fields;
 - DOM/data extraction from third-party pages;

@@ -6,6 +6,7 @@
 
   let workflowSaveTimer = null;
   let bound = false;
+  let toolEditorTarget = null;
 
   function escapeHtml(value) {
     return String(value ?? '')
@@ -39,7 +40,7 @@
     return state.workflows[state.activeWorkflowIndex] || null;
   }
 
-  function toolById(toolId) {
+  function searchToolById(toolId) {
     for (const category of state.engines) {
       const tool = (category.engines || []).find(item => item?.id === toolId);
       if (tool) return tool;
@@ -47,25 +48,39 @@
     return null;
   }
 
-  function toolOptions() {
-    const options = [`<option value="">${escapeHtml(SEOJumpI18n.t('chooseTool'))}</option>`];
-    state.engines.forEach((category, categoryIndex) => {
-      (category.engines || []).forEach((tool, toolIndex) => {
-        if (!tool?.name || !tool?.url) return;
-        options.push(`<option value="${categoryIndex}:${toolIndex}">${escapeHtml(category.name)} · ${escapeHtml(tool.name)}</option>`);
-      });
-    });
-    return options.join('');
+  function workflowTool(item) {
+    if (item?.id && item?.name && item?.url) return item;
+    if (item?.toolId) {
+      const source = searchToolById(item.toolId);
+      if (source?.name && source?.url) return { id: item.toolId, name: source.name, url: source.url };
+    }
+    return null;
   }
 
-  async function ensureToolId(categoryIndex, toolIndex) {
-    const tool = state.engines[categoryIndex]?.engines?.[toolIndex];
-    if (!tool) return '';
-    if (tool.id) return tool.id;
-    tool.id = `local:${crypto.randomUUID()}`;
-    app.markUnsaved();
-    await app.saveEngines();
-    return tool.id;
+  function createWorkflowTool(name, url) {
+    return {
+      id: `workflow-tool:${crypto.randomUUID()}`,
+      name: String(name || '').trim(),
+      url: String(url || '').trim()
+    };
+  }
+
+  function toolOptions(step) {
+    const options = [`<option value="">${escapeHtml(SEOJumpI18n.t('importTool'))}</option>`];
+    const existing = new Set((step.tools || []).map(item => {
+      const tool = workflowTool(item);
+      return tool ? `${tool.name}\n${tool.url}` : '';
+    }).filter(Boolean));
+    state.engines.forEach((category, categoryIndex) => {
+      const categoryOptions = [];
+      (category.engines || []).forEach((tool, toolIndex) => {
+        if (!tool?.name || !tool?.url) return;
+        if (existing.has(`${tool.name}\n${tool.url}`)) return;
+        categoryOptions.push(`<option value="${categoryIndex}:${toolIndex}">${escapeHtml(tool.name)}</option>`);
+      });
+      if (categoryOptions.length) options.push(`<optgroup label="${escapeHtml(category.name)}">${categoryOptions.join('')}</optgroup>`);
+    });
+    return options.join('');
   }
 
   function normalizeOrders(workflow) {
@@ -92,6 +107,22 @@
     state.activeWorkflowIndex = Math.min(state.activeWorkflowIndex, Math.max(0, state.workflows.length - 1));
   };
 
+  app.migrateLegacyWorkflowTools = async function migrateLegacyWorkflowTools() {
+    let changed = false;
+    state.workflows.forEach(workflow => {
+      (workflow.steps || []).forEach(step => {
+        step.tools = (step.tools || []).map(item => {
+          if (item?.id && item?.name && item?.url) return item;
+          const source = item?.toolId ? searchToolById(item.toolId) : null;
+          if (!source?.name || !source?.url) return item;
+          changed = true;
+          return { id: item.toolId, name: source.name, url: source.url };
+        });
+      });
+    });
+    if (changed) await chrome.storage.local.set({ workflows: state.workflows });
+  };
+
   app.renderWorkflows = function renderWorkflows() {
     const container = document.getElementById('workflows-container');
     if (!container) return;
@@ -112,12 +143,11 @@
         ${escapeHtml(item.title || SEOJumpI18n.t('untitledWorkflow'))}
       </button>`).join('');
 
-    const options = toolOptions();
     const steps = [...(workflow.steps || [])].sort((a, b) => a.order - b.order).map((step, index, all) => {
-      const assignedTools = (step.tools || []).map(({ toolId }, toolIndex) => {
-        const tool = toolById(toolId);
+      const assignedTools = (step.tools || []).map((item, toolIndex) => {
+        const tool = workflowTool(item);
         return `<div class="workflow-tool-item" data-tool-index="${toolIndex}">
-          <span>${escapeHtml(tool?.name || SEOJumpI18n.t('missingTool'))}</span>
+          <button type="button" class="workflow-edit-tool" ${tool ? '' : 'disabled'}>${escapeHtml(tool?.name || SEOJumpI18n.t('missingTool'))}</button>
           <button type="button" class="workflow-remove-tool" title="${escapeHtml(SEOJumpI18n.t('remove'))}">×</button>
         </div>`;
       }).join('');
@@ -135,8 +165,8 @@
         <textarea class="workflow-step-description" rows="2" placeholder="${escapeHtml(SEOJumpI18n.t('stepDescription'))}">${escapeHtml(step.description)}</textarea>
         <div class="workflow-tool-list">${assignedTools || `<span class="workflow-muted">${escapeHtml(SEOJumpI18n.t('noToolsInStep'))}</span>`}</div>
         <div class="workflow-add-tool-row">
-          <select class="workflow-tool-picker">${options}</select>
-          <button type="button" class="workflow-add-tool">+ ${escapeHtml(SEOJumpI18n.t('addTool'))}</button>
+          <select class="workflow-tool-picker">${toolOptions(step)}</select>
+          <button type="button" class="workflow-custom-tool">+ ${escapeHtml(SEOJumpI18n.t('customTool'))}</button>
         </div>
       </article>`;
     }).join('');
@@ -171,11 +201,86 @@
     return workflow.steps[index] || null;
   }
 
+  function validToolUrl(value) {
+    try {
+      const sample = String(value || '')
+        .replaceAll('%selectedText%', 'seo')
+        .replaceAll('%currentUrl%', 'https://example.com/page')
+        .replaceAll('%currentDomain%', 'example.com');
+      const parsed = new URL(sample);
+      return parsed.protocol === 'http:' || parsed.protocol === 'https:';
+    } catch (_) {
+      return false;
+    }
+  }
+
+  function closeToolEditor() {
+    document.getElementById('workflowToolModal').style.display = 'none';
+    toolEditorTarget = null;
+  }
+
+  function openToolEditor(stepIndex, toolIndex = null) {
+    const step = stepAt(stepIndex);
+    if (!step) return;
+    const existing = Number.isInteger(toolIndex) ? workflowTool(step.tools[toolIndex]) : null;
+    toolEditorTarget = { stepIndex, toolIndex };
+    document.getElementById('workflowToolModalTitle').textContent = SEOJumpI18n.t(existing ? 'editWorkflowTool' : 'customWorkflowTool');
+    document.getElementById('workflowToolName').value = existing?.name || '';
+    document.getElementById('workflowToolUrl').value = existing?.url || '';
+    document.getElementById('workflowToolModal').style.display = 'block';
+    document.getElementById('workflowToolName').focus();
+  }
+
+  async function saveToolEditor() {
+    if (!toolEditorTarget) return;
+    const name = document.getElementById('workflowToolName').value.trim();
+    const url = document.getElementById('workflowToolUrl').value.trim();
+    if (!name || !validToolUrl(url)) {
+      app.showMessage(SEOJumpI18n.t('invalidTool'), 'error');
+      return;
+    }
+    const step = stepAt(toolEditorTarget.stepIndex);
+    if (!step) return;
+    if (Number.isInteger(toolEditorTarget.toolIndex)) {
+      const current = workflowTool(step.tools[toolEditorTarget.toolIndex]);
+      step.tools[toolEditorTarget.toolIndex] = {
+        id: current?.id || `workflow-tool:${crypto.randomUUID()}`,
+        name,
+        url
+      };
+    } else {
+      step.tools.push(createWorkflowTool(name, url));
+    }
+    await saveWorkflows();
+    closeToolEditor();
+    rerender();
+  }
+
   app.bindWorkflowEditor = function bindWorkflowEditor() {
     if (bound) return;
     bound = true;
     const section = document.getElementById('workflows');
     if (!section) return;
+
+    section.addEventListener('change', async event => {
+      const picker = event.target.closest('.workflow-tool-picker');
+      if (!picker?.value) return;
+      const stepIndex = Number(picker.closest('.workflow-step-editor')?.dataset.stepIndex);
+      const step = stepAt(stepIndex);
+      if (!step) return;
+      const [categoryIndex, toolIndex] = picker.value.split(':').map(Number);
+      const source = state.engines[categoryIndex]?.engines?.[toolIndex];
+      if (!source?.name || !source?.url) return;
+      const duplicate = (step.tools || []).some(item => {
+        const tool = workflowTool(item);
+        return tool?.name === source.name && tool?.url === source.url;
+      });
+      if (!duplicate) {
+        step.tools.push(createWorkflowTool(source.name, source.url));
+        await saveWorkflows();
+      }
+      rerender();
+    });
 
     section.addEventListener('input', event => {
       const workflow = activeWorkflow();
@@ -262,16 +367,21 @@
         rerender();
         return;
       }
-      if (target.closest('.workflow-add-tool')) {
-        const picker = stepElement.querySelector('.workflow-tool-picker');
-        const [categoryIndex, toolIndex] = String(picker?.value || '').split(':').map(Number);
-        if (!Number.isInteger(categoryIndex) || !Number.isInteger(toolIndex)) return;
-        const toolId = await ensureToolId(categoryIndex, toolIndex);
-        if (!toolId || step.tools.some(item => item.toolId === toolId)) return;
-        step.tools.push({ toolId });
-        await saveWorkflows();
-        rerender();
+      if (target.closest('.workflow-edit-tool')) {
+        const toolIndex = Number(target.closest('.workflow-tool-item')?.dataset.toolIndex);
+        if (Number.isInteger(toolIndex)) openToolEditor(stepIndex, toolIndex);
+        return;
       }
+      if (target.closest('.workflow-custom-tool')) {
+        openToolEditor(stepIndex);
+      }
+    });
+
+    document.getElementById('workflowToolCancelBtn').addEventListener('click', closeToolEditor);
+    document.getElementById('workflowToolSaveBtn').addEventListener('click', () => saveToolEditor().catch(console.error));
+    document.getElementById('workflowToolUrl').addEventListener('keydown', event => {
+      if (event.key === 'Escape') closeToolEditor();
+      if (event.key === 'Enter' && event.ctrlKey) saveToolEditor().catch(console.error);
     });
   };
 })();

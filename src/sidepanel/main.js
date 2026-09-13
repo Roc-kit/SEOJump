@@ -25,6 +25,16 @@
     return map;
   }
 
+  function resolveStepTool(item) {
+    if (item?.id && item?.name && item?.url) return item;
+    if (item?.toolId) return state.tools.get(item.toolId) || null;
+    return null;
+  }
+
+  function stepToolId(item) {
+    return item?.id || item?.toolId || '';
+  }
+
   async function readPageContext() {
     const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
     if (!tab) return { selectedText: '', currentUrl: '', currentDomain: '', title: '' };
@@ -113,8 +123,9 @@
       description.textContent = step.description || '';
       const tools = document.createElement('div');
       tools.className = 'tool-row';
-      step.tools.forEach(({ toolId }) => {
-        const tool = state.tools.get(toolId);
+      step.tools.forEach(item => {
+        const toolId = stepToolId(item);
+        const tool = resolveStepTool(item);
         if (!tool) return;
         const opened = state.session.stepOpenedTools?.[step.id]?.includes(toolId);
         const button = document.createElement('button');
@@ -123,7 +134,7 @@
         button.textContent = `${opened ? '✓ ' : ''}${tool.name}`;
         button.addEventListener('click', event => {
           event.stopPropagation();
-          openTool(step, tool).catch(console.error);
+          openTool(step, tool, toolId).catch(console.error);
         });
         tools.append(button);
       });
@@ -139,7 +150,7 @@
     opened.add(toolId);
     state.session.stepOpenedTools[step.id] = [...opened];
 
-    const required = (step.tools || []).map(item => item.toolId).filter(Boolean);
+    const required = (step.tools || []).map(stepToolId).filter(Boolean);
     const complete = required.length > 0 && required.every(id => opened.has(id));
     if (complete && !state.session.completedStepIds.includes(step.id)) {
       state.session.completedStepIds.push(step.id);
@@ -178,11 +189,11 @@
     renderSteps();
   }
 
-  async function openTool(step, tool) {
+  async function openTool(step, tool, toolId) {
     state.session.currentStepId = step.id;
-    const savedTabId = state.session.stepTabs?.[step.id]?.[tool.id];
+    const savedTabId = state.session.stepTabs?.[step.id]?.[toolId];
     if (await focusTab(savedTabId)) {
-      await markToolOpened(step, tool.id);
+      await markToolOpened(step, toolId);
       return;
     }
 
@@ -200,8 +211,8 @@
     if (!response?.success) return;
     state.session.stepTabs = state.session.stepTabs || {};
     state.session.stepTabs[step.id] = state.session.stepTabs[step.id] || {};
-    if (response.tabId) state.session.stepTabs[step.id][tool.id] = response.tabId;
-    await markToolOpened(step, tool.id);
+    if (response.tabId) state.session.stepTabs[step.id][toolId] = response.tabId;
+    await markToolOpened(step, toolId);
   }
 
   async function chooseWorkflow(id) {

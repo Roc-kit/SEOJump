@@ -143,6 +143,7 @@
   document.addEventListener('DOMContentLoaded', async () => {
     try {
       await Promise.all([app.loadEngines(), app.loadWorkflows(), SEOJumpI18n.initialize()]);
+      await app.migrateLegacyWorkflowTools();
       document.title = SEOJumpI18n.t('optionsTitle');
       await bindPreferenceControls();
       app.renderAll();

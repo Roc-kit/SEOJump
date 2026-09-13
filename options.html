@@ -55,6 +55,7 @@
                         </svg>
                         <span data-i18n="workflows">Workflows</span>
                     </h2>
+                    <p class="workflow-copy-note" data-i18n="workflowCopyNote">Tools imported from Search Tools are copied into the Workflow and will not follow later Search Tools changes.</p>
                     <div id="workflows-container"></div>
                 </section>
 
@@ -150,6 +151,25 @@
             <div class="modal-footer">
                 <button class="modal-btn modal-btn-secondary" id="modalCancelBtn" data-i18n="cancel">Cancel</button>
                 <button class="modal-btn modal-btn-primary" id="modalSaveBtn" data-i18n="save">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="workflowToolModal">
+        <div class="modal workflow-tool-modal">
+            <div class="modal-header"><h3 class="modal-title" id="workflowToolModalTitle">Custom Workflow Tool</h3></div>
+            <div class="modal-body">
+                <input id="workflowToolName" class="workflow-tool-modal-name" type="text" data-i18n-placeholder="toolName">
+                <textarea id="workflowToolUrl" class="modal-url-input" data-i18n-placeholder="toolUrlPlaceholder"></textarea>
+                <div class="modal-placeholder-hint">
+                    <code>%selectedText%</code>
+                    <code>%currentUrl%</code>
+                    <code>%currentDomain%</code>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn modal-btn-secondary" id="workflowToolCancelBtn" data-i18n="cancel">Cancel</button>
+                <button class="modal-btn modal-btn-primary" id="workflowToolSaveBtn" data-i18n="save">Save</button>
             </div>
         </div>
     </div>
